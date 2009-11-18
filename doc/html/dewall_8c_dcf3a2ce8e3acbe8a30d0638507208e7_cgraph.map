@@ -1,0 +1,12 @@
+<area shape="rect" href="$simplex_8c.html#97b9f1e24153cf2618773608d1589a47" title="extract_list" alt="" coords="140,5,225,32">
+<area shape="rect" href="$simplex_8c.html#e54ca4f3f062bb00c4c51bd2e4480f7f" title="initialize_face_list" alt="" coords="121,56,244,83">
+<area shape="rect" href="$dewall_8c.html#6ede9dc7c8641a6678de6558fad4d2c6" title="initialize_plane" alt="" coords="129,107,236,133">
+<area shape="rect" href="$simplex_8c.html#8446ea58f16dbe8e11b44c2fc8117e32" title="insert_list" alt="" coords="144,157,221,184">
+<area shape="rect" href="$simplex_8c.html#fffa4aaae1191070a2b32d7d2ce1cd74" title="insert_simplex" alt="" coords="131,208,235,235">
+<area shape="rect" href="$simplex_8c.html#abad087e328ee69fc4ab91ccd49c480a" title="intersect" alt="" coords="147,259,219,285">
+<area shape="rect" href="$simplex_8c.html#8e51a198b9cd706c69770e88a89ead39" title="invertAxis" alt="" coords="143,309,223,336">
+<area shape="rect" href="$dewall_8c.html#7b4519818adb8efaba8259ad8b81f893" title="make_first_simplex" alt="" coords="116,360,249,387">
+<area shape="rect" href="$dewall_8c.html#c59b49f8cbb69bf3be327a9b737d00ee" title="make_simplex" alt="" coords="131,411,235,437">
+<area shape="rect" href="$dewall_8c.html#a0e891ce9b203040905142579eff9d8e" title="pointset_partition" alt="" coords="123,461,243,488">
+<area shape="rect" href="$simplex_8h.html#ce66725b5d239915af3b28a503190512" title="print_points" alt="" coords="139,512,227,539">
+<area shape="rect" href="$simplex_8c.html#508616c95da88cccfc03386142e9dc33" title="update_face" alt="" coords="137,563,228,589">
