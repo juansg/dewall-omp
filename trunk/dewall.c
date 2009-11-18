@@ -10,10 +10,9 @@ void initialize_plane(point_set *P, plane* alpha, Axis ax){}
 void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax)
 {
    //TODO: implement function logic   
-   printf("\ndeWall function not implemented!\n");
+   printf("\ndeWall function not fully implemented!\n");
    print_points(stdout, P);
    printf("Axis: %s\n", ax?"Y":"X");
-   return;
 
    face f;
 	face f1;
@@ -36,10 +35,11 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax)
 
   // Building the first simplex
 	if (AFL == NULL){
-	    make_first_simplex(P,&alpha,&t);
-     for(i = 0; i < 3; i++) 
-       insert_list(&(t.face[i]),AFL);	
-	  insert_simplex(&t,SL);
+	    if (make_first_simplex(P,&alpha,&t)){
+         for(i = 0; i < 3; i++) 
+            insert_list(&(t.face[i]),AFL);	
+	      insert_simplex(&t,SL);
+      }
 	}
 
   // Dividing the faces in 3 lists
