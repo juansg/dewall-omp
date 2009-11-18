@@ -3,11 +3,8 @@
 /* Functions not implemented yet!!!*/
 
 int pointset_partition(point_set *P, plane *alpha, point_set *P1, point_set *P2){return 0;}
-
 int make_first_simplex(point_set *P, plane *alpha, simplex *s){return 0;}
-
 int make_simplex(face *f, point_set *P, simplex *s){return 0;}
-
 void initialize_plane(point_set *P, plane* alpha, Axis ax){}
 
 void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax)
