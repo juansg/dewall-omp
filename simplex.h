@@ -56,5 +56,5 @@ int compare_points_X(const void *p1, const void *p2);
 int compare_points_Y(const void *p1, const void *p2);
 int intersect(face *f, plane *alpha);
 Axis invert_axis(Axis ax);
-float distance(point a, point b);
-float circumCircleRadius(point a, point b, point c);
+float distance(point *a, point *b);
+float circumCircleRadius(point *a, point *b, point *c);
