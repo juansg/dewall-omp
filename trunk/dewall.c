@@ -2,10 +2,8 @@
 
 /* Functions not implemented yet!!!*/
 
-int pointset_partition(point_set *P, plane *alpha, point_set *P1, point_set *P2){return 0;}
 int make_first_simplex(point_set *P, plane *alpha, simplex *s){return 0;}
 int make_simplex(face *f, point_set *P, simplex *s){return 0;}
-void initialize_plane(point_set *P, plane* alpha, Axis ax){}
 
 void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax)
 {
@@ -28,8 +26,10 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax)
   initialize_face_list(&AFL1);
   initialize_face_list(&AFL2);
     
-  initialize_plane(P,&alpha,ax);   
-  pointset_partition(P,&alpha,&P1,&P2);
+  printf("\npointset_partition initiated!\n");
+  pointset_partition(P,&alpha,ax,&P1,&P2);
+  print_points(stdout, &P1);
+  print_points(stdout, &P2);
 	
 	/* Simple Wall Construction */
 
@@ -69,11 +69,38 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax)
   /* Recursive Triangulation */
 	#pragma omp task
 	if (AFL1 != NULL)
-		deWall(&P1, &AFL1, SL, invertAxis(ax));
+		deWall(&P1, &AFL1, SL, invert_axis(ax));
 	#pragma omp task
 	if (AFL2 != NULL)
-		deWall(&P2, &AFL2, SL, invertAxis(ax));
+		deWall(&P2, &AFL2, SL, invert_axis(ax));
 
    //Free Lists...
   
 }
+
+void pointset_partition(point_set *P, plane* alpha, Axis ax, point_set *P1, point_set *P2){
+ switch(ax)
+  {
+   case XAxis :	qsort((void *)P->point, (size_t)P->size, sizeof(point), compare_points_X);
+		alpha->normal.x = 1;      
+      //calculates plane position from central elements (n/2)-1 and (n/2)
+		alpha->off = (P->point[P->size/2-1].x + P->point[P->size/2].x)/2;
+		break;
+
+   case YAxis : qsort((void *)P->point, (size_t)P->size, sizeof(point), compare_points_Y);
+		alpha->normal.y = 1;
+      //calculates plane position from central elements (n/2)-1 and (n/2)
+		alpha->off = (P->point[P->size/2-1].y + P->point[P->size/2].y)/2;
+		break;
+  }
+   // P1 contains the first half
+   P1->size = P->size/2;
+   P1->point = P->point;
+
+   // P2 contains the remaining elements
+   P2->size = P->size - P1->size;
+   P2->point = &(P->point[P1->size]);
+}
+   
+
+

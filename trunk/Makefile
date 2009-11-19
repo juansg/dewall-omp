@@ -1,5 +1,5 @@
 MYFLAGS = 
-CFLAGS =  
+CFLAGS = -lm 
 
 all: 
 	 $(CC) $(CFLAGS) $(MYFLAGS) simplexio.c simplex.c dewall.c  main.c -o dewall

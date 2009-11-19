@@ -21,11 +21,30 @@ void initialize_face_list(face_list *AFL) {
 }
 
 /* geometry */
+
+int compare_points_X(const void *vp1, const void *vp2)
+{
+  point *p1 = (point *)vp1;
+  point *p2 = (point *)vp2;
+  if(p1->x > p2->x) return  1;
+  else if(p1->x < p2->x) return -1;
+  else return 0;
+}
+
+int compare_points_Y(const void *vp1, const void *vp2)
+{
+  point *p1 = (point *)vp1;
+  point *p2 = (point *)vp2;
+  if(p1->y > p2->y)      return  1;
+  else if(p1->y < p2->y) return -1;
+  else return 0;
+}
+
 int intersect(face *f, plane *alpha) {
 	return 0;
 }
 
-Axis invertAxis(Axis ax) {
+Axis invert_axis(Axis ax) {
 	return !ax;
 }
 

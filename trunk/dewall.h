@@ -10,8 +10,8 @@
 #define empty_list NULL
 
 void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax);
-void initialize_plane(point_set *P, plane* alpha, Axis ax);
-int pointset_partition(point_set *P, plane *alpha, point_set *P1, point_set *P2);
+void pointset_partition(point_set *P, plane* alpha, Axis ax, point_set *P1, point_set *P2);
+
 int make_first_simplex(point_set *P, plane *alpha, simplex *s);
 int make_simplex(face *f, point_set *P, simplex *s);
 
