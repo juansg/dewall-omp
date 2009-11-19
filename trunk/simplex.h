@@ -19,7 +19,7 @@ typedef struct {
 } plane;
 
 typedef struct {	
-    point point[2];			
+    point *point[2];			
 } face;   
     
 //TODO: create real face list 
