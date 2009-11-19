@@ -54,3 +54,5 @@ void initialize_plane(point_set *P, plane* alpha, Axis ax);
 /* Geometry  */
 int intersect(face *f, plane *alpha);
 Axis invertAxis(Axis ax);
+float distance(point a, point b);
+float circumCircleRadius(point a, point b, point c);
