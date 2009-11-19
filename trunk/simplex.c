@@ -48,17 +48,17 @@ Axis invert_axis(Axis ax) {
 	return !ax;
 }
 
-float distance(point a, point b) {
-	return sqrtf(powf(a.x - b.x, 2) + powf(a.y - b.y, 2));
+float distance(point *a, point *b) {
+	return sqrtf(powf(a->x - b->x, 2) + powf(a->y - b->y, 2));
 }
 
-float circumCircleRadius(point a, point b, point c) {
-	float deltaAB = powf(a.x - b.x, 2) + powf(a.y - b.y, 2);
-	float deltaBC = powf(b.x - c.x, 2) + powf(b.y - c.y, 2);
-	float deltaAC = powf(a.x - c.x, 2) + powf(a.y - c.y, 2);
+float circumCircleRadius(point *a, point *b, point *c) {
+	float deltaAB = powf(a->x - b->x, 2) + powf(a->y - b->y, 2);
+	float deltaBC = powf(b->x - c->x, 2) + powf(b->y - c->y, 2);
+	float deltaAC = powf(a->x - c->x, 2) + powf(a->y - c->y, 2);
 
 	float dividend = sqrtf(deltaAB) * sqrtf(deltaBC) * sqrtf(deltaAC);
-	float divisor = 2 * (b.x * a.y - c.x * a.y - a.x * b.y + c.x * b.y + a.x * c.y
-			- b.x * c.y);
+	float divisor = 2 * (b->x * a->y - c->x * a->y - a->x * b->y + c->x * b->y + a->x * c->y
+			- b->x * c->y);
 	return abs(dividend/divisor);
 }
