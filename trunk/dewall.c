@@ -2,7 +2,6 @@
 
 /* Functions not implemented yet!!!*/
 
-int make_first_simplex(point_set *P, plane *alpha, simplex *s){return 0;}
 int make_simplex(face *f, point_set *P, simplex *s){return 0;}
 
 void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax)
@@ -34,8 +33,8 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax)
 	/* Simple Wall Construction */
 
   // Building the first simplex
-	if (AFL == NULL){
-	    if (make_first_simplex(P,&alpha,&t)){
+	if (*AFL == NULL){
+	    if (make_first_simplex(P,&t)){
          for(i = 0; i < 3; i++) 
             insert_list(&(t.face[i]),AFL);	
 	      insert_simplex(&t,SL);
@@ -101,6 +100,49 @@ void pointset_partition(point_set *P, plane* alpha, Axis ax, point_set *P1, poin
    P2->size = P->size - P1->size;
    P2->point = &(P->point[P1->size]);
 }
+
+//Return the minimum distance, the minimum index is stored in *i
+float minimum_distance(point *p, point_set *P, int start, int end, int *index){
+   int i, min_index = 0;
+   float dist = 0, min_dist = 0;   
+
+   dist = min_dist = distance(p, &(P->point[start]));
+
+   for(i = start+1; i < end; i++) {
+     dist = distance(p, &(P->point[i]));
+     if(dist < min_dist) {
+         min_dist = dist;    
+         min_index = i;         
+     }
+   }
+
+   *index = min_index;
+   return min_dist;
+}
+
+int make_first_simplex(point_set *P, simplex *s){
+   face f;
+   int min_index;
+   
+   // The first point is the nearest to the plane in the negative halfspace
+   f.point[0] = &(P->point[P->size/2-1]);	
+
+   // The second point is the nearest to the first one, from the positive halfspace
+   minimum_distance(f.point[0], P, P->size/2, P->size, &min_index); //Ignoring the distance value: not needed here
+   f.point[1] = &(P->point[min_index]);
+      
+   //f.point[2] = ???
+   f.point[2] = f.point[0];
+      
+   printf("\nGot the first simplex! It is composed by: p1: %f,%f; p2: %f,%f; p3: %s\n",
+           f.point[0]->x, f.point[0]->y,
+           f.point[1]->x, f.point[1]->y, 
+           "not yet!");  
+   
+   return 0;
+}
+
+
    
 
 

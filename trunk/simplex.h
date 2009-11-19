@@ -46,7 +46,6 @@ int write_simplex_list(char *filename, simplex_list *s);
 int insert_simplex(simplex *t, simplex_list *E);
 int insert_list(face *f, face_list *AFLa);
 int extract_list(face *f, face_list *AFL);
-int make_simplex(face *f, point_set *P, simplex *s);
 int update_face(face *f1, face_list *AFLa);
 void initialize_face_list(face_list *AFL);
 void initialize_plane(point_set *P, plane* alpha, Axis ax);
