@@ -35,7 +35,7 @@ int write_points(char *filename, point_set *P) {
 void print_points (FILE *fp, point_set *P) { 
   int i = 0;  
   if(fp) {    
-    fprintf(fp, "%d\n\n", P->size);
+    fprintf(fp, "\nsize: %d\n\n", P->size);
     for(i = 0; i < P->size; i++) {      
           fprintf(fp, "%f %f\n",P->point[i].x, P->point[i].y);
     }
