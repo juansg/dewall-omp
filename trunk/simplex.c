@@ -57,20 +57,6 @@ float distance(point *a, point *b) {
 }
 
 float circumCircleRadius(point *a, point *b, point *c) {
-	float result;
-
-	if (compare_points_X(a, b) || compare_points_X(b, c) || compare_points_X(a,
-			c)) {
-		printf("Impossible to calculate the radius.\n"
-			"There are points with the same x coordinate\n");
-		return;
-	}
-	if (compare_points_Y(a, b) || compare_points_Y(b, c) || compare_points_Y(a,
-			c)) {
-		printf("Impossible to calculate the radius.\n"
-			"There are points with the same y coordinate\n");
-		return;
-	}
 	float deltaAB = powf(a->x - b->x, 2) + powf(a->y - b->y, 2);
 	float deltaBC = powf(b->x - c->x, 2) + powf(b->y - c->y, 2);
 	float deltaAC = powf(a->x - c->x, 2) + powf(a->y - c->y, 2);
@@ -78,8 +64,7 @@ float circumCircleRadius(point *a, point *b, point *c) {
 	float dividend = sqrtf(deltaAB) * sqrtf(deltaBC) * sqrtf(deltaAC);
 	float divisor = 2 * (b->x * a->y - c->x * a->y - a->x * b->y + c->x * b->y
 			+ a->x * c->y - b->x * c->y);
-	result = dividend / divisor;
-	if (result < 0)
-		return result * -1;
-	return result;
+	if ((dividend || divisor) == 0)
+		return 0;
+	return fabsf(dividend / divisor);
 }
