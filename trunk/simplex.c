@@ -22,22 +22,26 @@ void initialize_face_list(face_list *AFL) {
 
 /* geometry */
 
-int compare_points_X(const void *vp1, const void *vp2)
-{
-  point *p1 = (point *)vp1;
-  point *p2 = (point *)vp2;
-  if(p1->x > p2->x) return  1;
-  else if(p1->x < p2->x) return -1;
-  else return 0;
+int compare_points_X(const void *vp1, const void *vp2) {
+	point *p1 = (point *) vp1;
+	point *p2 = (point *) vp2;
+	if (p1->x > p2->x)
+		return 1;
+	else if (p1->x < p2->x)
+		return -1;
+	else
+		return 0;
 }
 
-int compare_points_Y(const void *vp1, const void *vp2)
-{
-  point *p1 = (point *)vp1;
-  point *p2 = (point *)vp2;
-  if(p1->y > p2->y)      return  1;
-  else if(p1->y < p2->y) return -1;
-  else return 0;
+int compare_points_Y(const void *vp1, const void *vp2) {
+	point *p1 = (point *) vp1;
+	point *p2 = (point *) vp2;
+	if (p1->y > p2->y)
+		return 1;
+	else if (p1->y < p2->y)
+		return -1;
+	else
+		return 0;
 }
 
 int intersect(face *f, plane *alpha) {
@@ -53,12 +57,29 @@ float distance(point *a, point *b) {
 }
 
 float circumCircleRadius(point *a, point *b, point *c) {
+	float result;
+
+	if (compare_points_X(a, b) || compare_points_X(b, c) || compare_points_X(a,
+			c)) {
+		printf("Impossible to calculate the radius.\n"
+			"There are points with the same x coordinate\n");
+		return;
+	}
+	if (compare_points_Y(a, b) || compare_points_Y(b, c) || compare_points_Y(a,
+			c)) {
+		printf("Impossible to calculate the radius.\n"
+			"There are points with the same y coordinate\n");
+		return;
+	}
 	float deltaAB = powf(a->x - b->x, 2) + powf(a->y - b->y, 2);
 	float deltaBC = powf(b->x - c->x, 2) + powf(b->y - c->y, 2);
 	float deltaAC = powf(a->x - c->x, 2) + powf(a->y - c->y, 2);
 
 	float dividend = sqrtf(deltaAB) * sqrtf(deltaBC) * sqrtf(deltaAC);
-	float divisor = 2 * (b->x * a->y - c->x * a->y - a->x * b->y + c->x * b->y + a->x * c->y
-			- b->x * c->y);
-	return abs(dividend/divisor);
+	float divisor = 2 * (b->x * a->y - c->x * a->y - a->x * b->y + c->x * b->y
+			+ a->x * c->y - b->x * c->y);
+	result = dividend / divisor;
+	if (result < 0)
+		return result * -1;
+	return result;
 }
