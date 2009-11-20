@@ -64,7 +64,7 @@ float circumCircleRadius(point *a, point *b, point *c) {
 	float dividend = sqrtf(deltaAB) * sqrtf(deltaBC) * sqrtf(deltaAC);
 	float divisor = 2 * (b->x * a->y - c->x * a->y - a->x * b->y + c->x * b->y
 			+ a->x * c->y - b->x * c->y);
-	if ((dividend || divisor) == 0)
+	if (dividend == 0 || divisor == 0)
 		return 0;
 	return fabsf(dividend / divisor);
 }
