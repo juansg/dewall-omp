@@ -71,6 +71,11 @@ float circumCircleRadius(point *a, point *b, point *c) {
 	return fabsf(dividend / divisor);
 }
 
+
+/*
+ * 	Ported from p bourke's triangulate.java
+ *	http://local.wasp.uwa.edu.au/~pbourke/papers/triangulate/triangulate.java
+ */
 point* circumCircleCentre(point *a, point *b, point *c) {
 	float m1, m2, mx1, mx2, my1, my2;
 	float dx, dy, rsqr, drsqr, r;
