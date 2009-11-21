@@ -1,10 +1,6 @@
 #include "simplex.h"
 #include <math.h>
 
-#define EPSILON 0.000001
-
-/* Functions not implemented yet!!! */
-
 /* face list handling */
 int insert_simplex(simplex *t, simplex_list *E) {
 	return 0;
@@ -78,8 +74,7 @@ float circumCircleRadius(point *a, point *b, point *c) {
  */
 int circumCircleCentre(point *a, point *b, point *c, point *centre) {
 	float m1, m2, mx1, mx2, my1, my2;
-	float xc, yc;
-
+	
 	// Check for coincident points
 	if (fabsf(a->y - b->y) < EPSILON && fabsf(b->y - c->y) < EPSILON)
             return 0;
@@ -88,14 +83,14 @@ int circumCircleCentre(point *a, point *b, point *c, point *centre) {
 		m2 = -(c->x - b->x) / (c->y - b->y);
 		mx2 = (b->x + c->x) / 2.0;
 		my2 = (b->y + c->y) / 2.0;
-		xc = (b->x + a->x) / 2.0;
-		yc = m2 * (xc - mx2) + my2;
+		centre->x = (b->x + a->x) / 2.0;
+		centre->y = m2 * (centre->x - mx2) + my2;
 	} else if (fabsf(c->y - b->y) < EPSILON) {
 		m1 = -(b->x - a->x) / (b->y - a->y);
 		mx1 = (a->x + b->x) / 2.0;
 		my1 = (a->y + b->y) / 2.0;
-		xc = (c->x + b->x) / 2.0;
-		yc = m1 * (xc - mx1) + my1;
+		centre->x = (c->x + b->x) / 2.0;
+		centre->y = m1 * (centre->x - mx1) + my1;
 	} else {
 		m1 = -(b->x - a->x) / (b->y - a->y);
 		m2 = -(c->x - b->x) / (c->y - b->y);
@@ -103,54 +98,23 @@ int circumCircleCentre(point *a, point *b, point *c, point *centre) {
 		mx2 = (b->x + c->x) / 2.0;
 		my1 = (a->y + b->y) / 2.0;
 		my2 = (b->y + c->y) / 2.0;
-		xc = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
-		yc = m1 * (xc - mx1) + my1;
+		centre->x = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
+		centre->y = m1 * (centre->x - mx1) + my1;
 	}
-
-	centre->x = xc;
-	centre->y = yc;
 
 	return 1;
 }
 
 int circumCircleCentreAndRadius(point *a, point *b, point *c, point *centre, float *r) {
-	float m1, m2, mx1, mx2, my1, my2;
 	float dx, dy;
-	float xc, yc;
 
-	// Check for coincident points
-	if (fabsf(a->y - b->y) < EPSILON && fabsf(b->y - c->y) < EPSILON)
-		return 0;
-
-	if (fabsf(b->y - a->y) < EPSILON) {
-		m2 = -(c->x - b->x) / (c->y - b->y);
-		mx2 = (b->x + c->x) / 2.0;
-		my2 = (b->y + c->y) / 2.0;
-		xc = (b->x + a->x) / 2.0;
-		yc = m2 * (xc - mx2) + my2;
-	} else if (fabsf(c->y - b->y) < EPSILON) {
-		m1 = -(b->x - a->x) / (b->y - a->y);
-		mx1 = (a->x + b->x) / 2.0;
-		my1 = (a->y + b->y) / 2.0;
-		xc = (c->x + b->x) / 2.0;
-		yc = m1 * (xc - mx1) + my1;
-	} else {
-		m1 = -(b->x - a->x) / (b->y - a->y);
-		m2 = -(c->x - b->x) / (c->y - b->y);
-		mx1 = (a->x + b->x) / 2.0;
-		mx2 = (b->x + c->x) / 2.0;
-		my1 = (a->y + b->y) / 2.0;
-		my2 = (b->y + c->y) / 2.0;
-		xc = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
-		yc = m1 * (xc - mx1) + my1;
-	}
-
-	dx = b->x - xc;
-	dy = b->y - yc;
-	*r = sqrtf(dx * dx + dy * dy);
-
-	centre->x = xc;
-	centre->y = yc;
+        if (!circumCircleCentre(a, b, c, centre))
+            return 0;
+        else {
+            dx = b->x - centre->x;
+            dy = b->y - centre->y;
+            *r = sqrtf(dx * dx + dy * dy);
+        }
 
         return 1;
 }

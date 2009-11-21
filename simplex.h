@@ -3,6 +3,8 @@
 
 /* Data structures */
 
+#define EPSILON 0.000001
+
 typedef struct {   
 	float x, y;
 } point;
