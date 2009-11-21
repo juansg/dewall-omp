@@ -106,11 +106,12 @@ float minimum_distance(point *p, point_set *P, int start, int end, int *index){
    int i, min_index = 0;
    float dist = 0, min_dist = 0;   
 
-   dist = min_dist = distance(p, &(P->point[start]));
+   dist = min_dist = 999;
 
-   for(i = start+1; i < end; i++) {
+   for(i = start; i < end; i++) {
      dist = distance(p, &(P->point[i]));
-     if(dist < min_dist) {
+     printf("distance: p[%d] = %f\n", i, dist);
+     if(dist > 0 && dist < min_dist) {
          min_dist = dist;    
          min_index = i;         
      }
@@ -120,24 +121,47 @@ float minimum_distance(point *p, point_set *P, int start, int end, int *index){
    return min_dist;
 }
 
+//Return the minimum radius, the minimum index is stored in *i
+float minimum_radius(point *p1, point *p2, point_set *P, int start, int end, int *index){
+   int i, min_index = 0;
+   float rad = 0, min_rad = 0;   
+
+   rad = min_rad = 999;
+
+   for(i = start; i < end; i++) {
+     rad = circumCircleRadius(p1,p2,&(P->point[i]));
+     printf("radius: p[%d] = %f\n", i, rad);
+     if(rad > 0 && rad < min_rad) {
+         min_rad = rad;    
+         min_index = i;         
+     }
+   }
+
+   *index = min_index;
+   return min_rad;
+}
+
 int make_first_simplex(point_set *P, simplex *s){
    face f;
    int min_index;
    
-   // The first point is the nearest to the plane in the negative halfspace
+   // select the point p1 nearest to the plane 
    f.point[0] = &(P->point[P->size/2-1]);	
 
-   // The second point is the nearest to the first one, from the positive halfspace
-   minimum_distance(f.point[0], P, P->size/2, P->size, &min_index); //Ignoring the distance value: not needed here
+   // select a second point p2 such that p2 is the nearest point to p1 on the other side of alpha
+   printf("minimum distance: %f\n", minimum_distance(f.point[0], P, P->size/2, P->size, &min_index));
    f.point[1] = &(P->point[min_index]);
       
-   //f.point[2] = ???
-   f.point[2] = f.point[0];
+   // search the point p3 such that the circum-circle around the 1-face (p1, p2) and the point p3 has the minimum
+   //radius
+
+   printf("minimum radius: %f\n", minimum_radius(f.point[0], f.point[1], P, 0, P->size, &min_index));
+   f.point[2] = &(P->point[min_index]);
       
-   printf("\nGot the first simplex! It is composed by: p1: %f,%f; p2: %f,%f; p3: %s\n",
+   printf("\nGot the first simplex! It is composed by: p1: %f,%f; p2: %f,%f; p3: %f,%f\n",
            f.point[0]->x, f.point[0]->y,
            f.point[1]->x, f.point[1]->y, 
-           "not yet!");  
+           f.point[2]->x, f.point[2]->y);  
    
    return 0;
 }
