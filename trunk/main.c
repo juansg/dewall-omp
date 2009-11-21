@@ -5,40 +5,6 @@ int main(int argc, char *argv[]) {
 	face_list AFL;
 	simplex_list SL;
 
-	point a, b, c;
-
-//	a.x = -0.145802;
-//	a.y = -0.494293;
-//	b.x = 0.059801;
-//	b.y = -0.257012;
-//	c.x = 0.059801;
-//	c.y = -0.257012;
-
-//	a.x = -0.145802;
-//	a.y = -0.494293;
-//	b.x = 0.059801;
-//	b.y = -0.257012;
-//	c.x = -0.059252;
-//	c.y = 0.158193;
-
-//	a.x = 0;
-//	a.y = 0;
-//	b.x = 6;
-//	b.y = 0;
-//	c.x = 3;
-//	c.y = 3;
-
-	point *centro = circumCircleCentre(&a, &b, &c);
-
-	printf("raio=%f\n", circumCircleRadius(&a, &b, &c));
-	printf("centro=(%f,%f)\n", centro->x, centro->y);
-
-	point *centre = (point *) malloc(sizeof(point));
-	float r;
-
-	circumCircleCentreAndRadius(&a, &b, &c, centre, &r);
-	printf("raio=%f e centro=%f,%f\n", r, centre->x, centre->y);
-
 	if (argc < 3 || strcmp(argv[1], "-h") == 0)
 		printf("Usage: dewall <input_file> <output_file>\n");
 	else {

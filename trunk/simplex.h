@@ -57,5 +57,5 @@ int intersect(face *f, plane *alpha);
 Axis invert_axis(Axis ax);
 float distance(point *a, point *b);
 float circumCircleRadius(point *a, point *b, point *c);
-point* circumCircleCentre(point *a, point *b, point *c);
-void circumCircleCentreAndRadius(point *a, point *b, point *c, point *centre, float *r);
+int circumCircleCentre(point *a, point *b, point *c, point *centre);
+int circumCircleCentreAndRadius(point *a, point *b, point *c, point *centre, float *r);

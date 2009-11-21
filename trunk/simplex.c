@@ -46,7 +46,7 @@ int compare_points_Y(const void *vp1, const void *vp2) {
 		return 0;
 }
 
-int intersect(face *f, plane *alpha) {
+int intersect(face *f, plane *alpha) {  
 	return 0;
 }
 
@@ -76,15 +76,13 @@ float circumCircleRadius(point *a, point *b, point *c) {
  * 	Ported from p bourke's triangulate.java
  *	http://local.wasp.uwa.edu.au/~pbourke/papers/triangulate/triangulate.java
  */
-point* circumCircleCentre(point *a, point *b, point *c) {
+int circumCircleCentre(point *a, point *b, point *c, point *centre) {
 	float m1, m2, mx1, mx2, my1, my2;
-	float dx, dy, rsqr, drsqr, r;
 	float xc, yc;
-	point *centre = (point *) malloc(sizeof(point));
 
 	// Check for coincident points
 	if (fabsf(a->y - b->y) < EPSILON && fabsf(b->y - c->y) < EPSILON)
-		return;
+            return 0;
 
 	if (fabsf(b->y - a->y) < EPSILON) {
 		m2 = -(c->x - b->x) / (c->y - b->y);
@@ -109,27 +107,20 @@ point* circumCircleCentre(point *a, point *b, point *c) {
 		yc = m1 * (xc - mx1) + my1;
 	}
 
-	dx = b->x - xc;
-	dy = b->y - yc;
-	rsqr = dx * dx + dy * dy;
-	r = sqrtf(rsqr);
-
-	printf("raio novo=%f\n", r);
-
 	centre->x = xc;
 	centre->y = yc;
 
-	return centre;
+	return 1;
 }
 
-void circumCircleCentreAndRadius(point *a, point *b, point *c, point *centre, float *r) {
+int circumCircleCentreAndRadius(point *a, point *b, point *c, point *centre, float *r) {
 	float m1, m2, mx1, mx2, my1, my2;
-	float dx, dy, rsqr, drsqr;
+	float dx, dy;
 	float xc, yc;
 
 	// Check for coincident points
 	if (fabsf(a->y - b->y) < EPSILON && fabsf(b->y - c->y) < EPSILON)
-		return;
+		return 0;
 
 	if (fabsf(b->y - a->y) < EPSILON) {
 		m2 = -(c->x - b->x) / (c->y - b->y);
@@ -156,9 +147,10 @@ void circumCircleCentreAndRadius(point *a, point *b, point *c, point *centre, fl
 
 	dx = b->x - xc;
 	dy = b->y - yc;
-	rsqr = dx * dx + dy * dy;
-	*r = sqrtf(rsqr);
+	*r = sqrtf(dx * dx + dy * dy);
 
 	centre->x = xc;
 	centre->y = yc;
+
+        return 1;
 }
