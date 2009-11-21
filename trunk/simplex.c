@@ -71,8 +71,9 @@ float circumCircleRadius(point *a, point *b, point *c) {
 	return fabsf(dividend / divisor);
 }
 
-point* circumCircleCentre(point *a, point *b, point*c) {
+point* circumCircleCentre(point *a, point *b, point *c) {
 	float m1, m2, mx1, mx2, my1, my2;
+	float dx, dy, rsqr, drsqr, r;
 	float xc, yc;
 	point *centre = (point *) malloc(sizeof(point));
 
@@ -103,8 +104,56 @@ point* circumCircleCentre(point *a, point *b, point*c) {
 		yc = m1 * (xc - mx1) + my1;
 	}
 
+	dx = b->x - xc;
+	dy = b->y - yc;
+	rsqr = dx * dx + dy * dy;
+	r = sqrtf(rsqr);
+
+	printf("raio novo=%f\n", r);
+
 	centre->x = xc;
 	centre->y = yc;
 
 	return centre;
+}
+
+void circumCircleCentreAndRadius(point *a, point *b, point *c, point *centre, float *r) {
+	float m1, m2, mx1, mx2, my1, my2;
+	float dx, dy, rsqr, drsqr;
+	float xc, yc;
+
+	// Check for coincident points
+	if (fabsf(a->y - b->y) < EPSILON && fabsf(b->y - c->y) < EPSILON)
+		return;
+
+	if (fabsf(b->y - a->y) < EPSILON) {
+		m2 = -(c->x - b->x) / (c->y - b->y);
+		mx2 = (b->x + c->x) / 2.0;
+		my2 = (b->y + c->y) / 2.0;
+		xc = (b->x + a->x) / 2.0;
+		yc = m2 * (xc - mx2) + my2;
+	} else if (fabsf(c->y - b->y) < EPSILON) {
+		m1 = -(b->x - a->x) / (b->y - a->y);
+		mx1 = (a->x + b->x) / 2.0;
+		my1 = (a->y + b->y) / 2.0;
+		xc = (c->x + b->x) / 2.0;
+		yc = m1 * (xc - mx1) + my1;
+	} else {
+		m1 = -(b->x - a->x) / (b->y - a->y);
+		m2 = -(c->x - b->x) / (c->y - b->y);
+		mx1 = (a->x + b->x) / 2.0;
+		mx2 = (b->x + c->x) / 2.0;
+		my1 = (a->y + b->y) / 2.0;
+		my2 = (b->y + c->y) / 2.0;
+		xc = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
+		yc = m1 * (xc - mx1) + my1;
+	}
+
+	dx = b->x - xc;
+	dy = b->y - yc;
+	rsqr = dx * dx + dy * dy;
+	*r = sqrtf(rsqr);
+
+	centre->x = xc;
+	centre->y = yc;
 }
