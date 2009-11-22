@@ -1,8 +1,5 @@
 #include <stdio.h>
 #include "../../dewall.h"
-#include "../../hashlist.h"
-
-
 
 void print_list(FILE *fp, list *l);
 int equal_points(void *vp1, void *vp2);
