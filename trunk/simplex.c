@@ -5,10 +5,11 @@
 int insert_simplex(simplex *t, simplex_list *E) {
 	return 0;
 }
-int insert_list(face *f, face_list *AFLa) {
+
+int insert_face(face *f, face_list *AFLa) {
 	return 0;
 }
-int extract_list(face *f, face_list *AFL) {
+int extract_face(face *f, face_list *AFL) {
 	return 0;
 }
 int update_face(face *f1, face_list *AFLa) {
@@ -17,7 +18,6 @@ int update_face(face *f1, face_list *AFLa) {
 void initialize_face_list(face_list *AFL) {
 	*AFL = NULL;
 }
-
 /* geometry */
 
 int compare_points_X(const void *vp1, const void *vp2) {
@@ -79,6 +79,7 @@ int circumCircleCentre(point *a, point *b, point *c, point *centre) {
 	if (fabsf(a->y - b->y) < EPSILON && fabsf(b->y - c->y) < EPSILON)
             return 0;
 
+        // The comparison with EPSILON avois division by zero
 	if (fabsf(b->y - a->y) < EPSILON) {
 		m2 = -(c->x - b->x) / (c->y - b->y);
 		mx2 = (b->x + c->x) / 2.0;
