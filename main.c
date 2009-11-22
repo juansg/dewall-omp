@@ -1,4 +1,5 @@
 #include "dewall.h"
+#include "hashlist.h"
 
 int main(int argc, char *argv[]) {
 	point_set P;

@@ -46,11 +46,10 @@ int write_simplex_list(char *filename, simplex_list *s);
 
 /* Face list handling */
 int insert_simplex(simplex *t, simplex_list *E);
-int insert_list(face *f, face_list *AFLa);
-int extract_list(face *f, face_list *AFL);
+int insert_face(face *f, face_list *AFLa);
+int extract_face(face *f, face_list *AFL);
 int update_face(face *f1, face_list *AFLa);
 void initialize_face_list(face_list *AFL);
-void initialize_plane(point_set *P, plane* alpha, Axis ax);
 
 /* Geometry  */
 int compare_points_X(const void *p1, const void *p2);

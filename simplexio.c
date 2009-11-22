@@ -37,7 +37,7 @@ void print_points (FILE *fp, point_set *P) {
   if(fp) {    
     fprintf(fp, "\nsize: %d\n\n", P->size);
     for(i = 0; i < P->size; i++) {      
-          fprintf(fp, "%f %f\n",P->point[i].x, P->point[i].y);
+          fprintf(fp, "(%f %f)\n",P->point[i].x, P->point[i].y);
     }
   }
 }
