@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "../../simplex.h"
+#include "../../dewall.h"
 
 int main(){
   point_set P;

@@ -1,5 +1,6 @@
 #include "dewall.h"
-#include "hashlist.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 int main(int argc, char *argv[]) {
 	point_set P;
@@ -15,8 +16,8 @@ int main(int argc, char *argv[]) {
 		}
 
 		//TODO: create real list initialization
-		AFL = empty_list;
-		SL = empty_list;
+		AFL = NULL;
+		SL = NULL;
 
 		// ---- Calculate time from here -----
 		deWall(&P, &AFL, &SL, XAxis);

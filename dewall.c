@@ -1,4 +1,5 @@
 #include "dewall.h"
+#include <stdio.h>
 
 /* Functions not implemented yet!!!*/
 
@@ -36,23 +37,23 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax)
 	if (*AFL == NULL){
 	    if (make_first_simplex(P,&t)){
          for(i = 0; i < 3; i++) 
-            insert_list(&(t.face[i]),AFL);	
+            insert_face(&(t.face[i]),AFL);	
 	      insert_simplex(&t,SL);
       }
 	}
 
   // Dividing the faces in 3 lists
-	while (extract_list(&f,AFL)){
+	while (extract_face(&f,AFL)){
         switch (intersect(&f,&alpha)) {
-            case  0: insert_list(&f, &AFLa); break;
-            case  1: insert_list(&f, &AFL1); break;
-            case -1: insert_list(&f, &AFL2); break;
+            case  0: insert_face(&f, &AFLa); break;
+            case  1: insert_face(&f, &AFL1); break;
+            case -1: insert_face(&f, &AFL2); break;
         }
 	}
 	
   // Building the wall for the faces in the middle
 	while(AFLa != NULL){
-        extract_list(&f,&AFLa);
+        extract_face(&f,&AFLa);
         if (make_simplex(&f, P, &t)){
             insert_simplex(&t,SL);
             for(i = 0; i < 3 /*&& (t.face[i] != f)*/; i++){
