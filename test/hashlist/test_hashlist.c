@@ -1,8 +1,12 @@
 #include <stdio.h>
-#include "../../simplex.h"
+#include "../../dewall.h"
 #include "../../hashlist.h"
 
-void print_list(FILE *fp, list *l) ;
+
+
+void print_list(FILE *fp, list *l);
+int equal_points(void *vp1, void *vp2);
+int hash_points(void *vp1);
 
 int main() {
   point_set P;
@@ -12,7 +16,8 @@ int main() {
   if (read_points("test_hashlist.p", &P) == -1)
     printf("Failed to read input points.\n");
   else {
-    initialize_list(&l,sizeof(point *),NULL);
+    initialize_list(&l,sizeof(point *),equal_points);
+    hash_list(&l, P.size/4, hash_points);
     
     // Insert elements into the list
     for (i = 0; i < P.size; i++)
@@ -50,3 +55,22 @@ void print_list(FILE *fp, list *l) {
       curr = curr->next;
     }
 }
+
+int equal_points(void *vp1, void *vp2)  {
+  	point *p1 = (point *) vp1;
+	  point *p2 = (point *) vp2;  
+    
+    if (p1->x == p2->x && p1->y == p2->y)
+		  return 1;
+	  else
+		  return 0;
+}
+
+int hash_points(void *vp1) {
+  point *p1 = (point *) vp1;
+  return (int)((long)(p1->x) ^ (long)(p1->y));
+
+}
+
+
+
