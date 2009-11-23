@@ -1,7 +1,6 @@
 #include "dewall.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "geometry.h"
 
 int main(int argc, char *argv[]) {
 	point_set P;
