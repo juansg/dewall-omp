@@ -113,3 +113,17 @@ int intersect(face *f, plane *alpha) {
 	else if (f1) return 1;
 	else return -1;
 }
+
+//Returns 1 if point is above the face, -1 if point is below and
+//0 if point intersects the face
+int pointLocationRelativeToFace(face *face, point *p) {
+	float slope, beta;
+	slope = (face->point[1]->y - face->point[0]->y) / (face->point[1]->x
+			- face->point[0]->x);
+	beta = slope * face->point[0]->x - face->point[0]->y;
+	if (p->y > p->x * slope + beta)
+		return 1;
+	if (p->y < p->x * slope + beta)
+		return -1;
+	return 0;
+}
