@@ -15,9 +15,8 @@ int main(int argc, char *argv[]) {
 			exit(EXIT_FAILURE);
 		}
 
-		//TODO: create real list initialization
-		AFL = NULL;
-		SL = NULL;
+		initialize_face_list(&AFL, P.size/4);
+		initialize_simplex_list(&SL, P.size/4);
 
 		// ---- Calculate time from here -----
 		deWall(&P, &AFL, &SL, XAxis);

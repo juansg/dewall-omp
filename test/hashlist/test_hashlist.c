@@ -48,7 +48,7 @@ void print_list(FILE *fp, list *l) {
     while (curr) {
       p = (point *)curr->obj;
       if (p)
-        printf("(%f, %f)\n", p->x, p->y);
+        fprintf(fp, "(%f, %f)\n", p->x, p->y);
       curr = curr->next;
     }
 }
