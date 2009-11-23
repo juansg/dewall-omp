@@ -27,9 +27,12 @@ enum Axis {XAxis, YAxis};
 /* Geometry  */
 int compare_points_X(const void *p1, const void *p2);
 int compare_points_Y(const void *p1, const void *p2);
-int intersect(face *f, plane *alpha);
-Axis invert_axis(Axis ax);
+
 float distance(point *a, point *b);
 float circumCircleRadius(point *a, point *b, point *c);
 int circumCircleCentre(point *a, point *b, point *c, point *centre);
 int circumCircleCentreAndRadius(point *a, point *b, point *c, point *centre, float *r);
+
+int right_side(point *p, plane *alpha);
+int intersect(face *f, plane *alpha);
+Axis invert_axis(Axis ax);
