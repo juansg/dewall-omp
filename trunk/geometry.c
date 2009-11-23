@@ -25,10 +25,6 @@ int compare_points_Y(const void *vp1, const void *vp2) {
 		return 0;
 }
 
-int intersect(face *f, plane *alpha) {  
-	return 0;
-}
-
 Axis invert_axis(Axis ax) {
 	return !ax;
 }
@@ -101,4 +97,19 @@ int circumCircleCentreAndRadius(point *a, point *b, point *c, point *centre, flo
         }
 
         return 1;
+}
+
+int right_side(point *p, plane *alpha){
+	// 1: right side of the plane, 0: otherwise
+	if((alpha->normal.x * p->x + alpha->normal.y * p->y) > (alpha->off + EPSILON)) 
+		return 1;
+	else return 0;	
+}
+
+int intersect(face *f, plane *alpha) {  
+	int f1 = right_side(f->point[0],alpha);
+	int f2 = right_side(f->point[1],alpha);
+	if(f1 != f2) return 0;
+	else if (f1) return 1;
+	else return -1;
 }

@@ -15,12 +15,16 @@ void print_face_list(FILE *fp, face_list *l) {
 }
 
 void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax) {
+	// How can I triangulate less than 3 points?
+	if (P->size < 3)
+	 return;
+	
+   printf("\n--------------------------------------------");
    printf("\nP:");
    print_points(stdout, P);
    printf("Axis: %s\n", ax?"Y":"X");
-
+	
    face *f;
-   face *f1;
    face_list AFLa, AFL1, AFL2;
 
    plane alpha;
@@ -78,6 +82,7 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax) {
         }		
 	}
 
+	printf("\n--------------------------------------------");
   /* Recursive Triangulation */
 	#pragma omp task
 	if (AFL1.size > 0)
@@ -85,7 +90,7 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax) {
 	#pragma omp task
 	if (AFL2.size > 0)
 		deWall(&P2, &AFL2, SL, invert_axis(ax));
-
+	
    //Free Lists...
   
 }
@@ -95,11 +100,13 @@ void pointset_partition(point_set *P, plane* alpha, Axis ax, point_set *P1, poin
   {
    case XAxis :	qsort((void *)P->point, (size_t)P->size, sizeof(point), compare_points_X);
 		alpha->normal.x = 1;      
-      //calculates plane position from central elements (n/2)-1 and (n/2)
+		alpha->normal.y = 0;  
+      //calculates plane position from central elements (n/2)-1 and (n/2)		
 		alpha->off = (P->point[P->size/2-1].x + P->point[P->size/2].x)/2;
 		break;
 
    case YAxis : qsort((void *)P->point, (size_t)P->size, sizeof(point), compare_points_Y);
+		alpha->normal.x = 0;  
 		alpha->normal.y = 1;
       //calculates plane position from central elements (n/2)-1 and (n/2)
 		alpha->off = (P->point[P->size/2-1].y + P->point[P->size/2].y)/2;
