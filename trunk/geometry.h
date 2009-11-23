@@ -36,3 +36,5 @@ int circumCircleCentreAndRadius(point *a, point *b, point *c, point *centre, flo
 int right_side(point *p, plane *alpha);
 int intersect(face *f, plane *alpha);
 Axis invert_axis(Axis ax);
+
+int pointLocationRelativeToFace(face *face, point *p);
