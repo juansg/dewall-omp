@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include "simplex.h"
 
+//Debug trick
+#define LOGGER printf("[%s - %s] : file %s, line %d\n", __DATE__, __TIME__, __FILE__,__LINE__)
+
 
 int read_points(char *filename, point_set *P) {
   FILE *fp;
@@ -25,11 +28,11 @@ int read_points(char *filename, point_set *P) {
 
 int write_points(char *filename, point_set *P) {
   FILE *fp = fopen(filename,"w");
-  if (fp)
-    print_points(fp, P);  
-  else 
-    return -1;
-  return 0;
+  if (!fp)
+	return 0;
+  print_points(fp, P);  
+  fclose(fp);    
+  return 1;
  }
 
 void print_points (FILE *fp, point_set *P) { 
@@ -42,11 +45,28 @@ void print_points (FILE *fp, point_set *P) {
   }
 }
 
-int write_simplex_list(char *filename, simplex_list *s)
-{
- //TODO: implement function logic
-  printf("\nwrite_simplex_list function not implemented!\n");
- return 0;
+int write_simplex_list(char *filename, simplex_list *sl) {	
+  simplex *s = NULL;
+  FILE *fp = fopen(filename,"w");
+  int i = 0, j = 0;
+  if (!fp)
+    return 0;
+    
+  printf("\nWriting simplex list to file %s.\n\n", filename);  
+  list_element *curr = sl->first;    
+  while (curr){
+	  s = (simplex *)curr->obj;
+	  for (i = 0; i < 3; i++){
+		  if (s)
+			fprintf(fp, "(%f %f) ",
+			s->face[i]->point[0]->x , s->face[i]->point[0]->y);	  
+	  }  
+	  fprintf(fp, "\n");
+	  curr = curr->next;
+  }
+  
+  fclose(fp);
+  return 1;
 }
 
 
