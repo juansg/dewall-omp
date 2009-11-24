@@ -1,5 +1,6 @@
 #include "geometry.h"
 #include <math.h>
+#include <stdio.h>"
 
 /* geometry */
 
@@ -46,19 +47,18 @@ float circumCircleRadius(point *a, point *b, point *c) {
 	return fabsf(dividend / divisor);
 }
 
-
 /*
  * 	Ported from p bourke's triangulate.java
  *	http://local.wasp.uwa.edu.au/~pbourke/papers/triangulate/triangulate.java
  */
 int circumCircleCentre(point *a, point *b, point *c, point *centre) {
 	float m1, m2, mx1, mx2, my1, my2;
-	
+
 	// Check for coincident points
 	if (fabsf(a->y - b->y) < EPSILON && fabsf(b->y - c->y) < EPSILON)
-            return 0;
+		return 0;
 
-        // The comparison with EPSILON avois division by zero
+	// The comparison with EPSILON avois division by zero
 	if (fabsf(b->y - a->y) < EPSILON) {
 		m2 = -(c->x - b->x) / (c->y - b->y);
 		mx2 = (b->x + c->x) / 2.0;
@@ -85,45 +85,52 @@ int circumCircleCentre(point *a, point *b, point *c, point *centre) {
 	return 1;
 }
 
-int circumCircleCentreAndRadius(point *a, point *b, point *c, point *centre, float *r) {
+int circumCircleCentreAndRadius(point *a, point *b, point *c, point *centre,
+		float *r) {
 	float dx, dy;
 
-        if (!circumCircleCentre(a, b, c, centre))
-            return 0;
-        else {
-            dx = b->x - centre->x;
-            dy = b->y - centre->y;
-            *r = sqrtf(dx * dx + dy * dy);
-        }
+	if (!circumCircleCentre(a, b, c, centre))
+		return 0;
+	else {
+		dx = b->x - centre->x;
+		dy = b->y - centre->y;
+		*r = sqrtf(dx * dx + dy * dy);
+	}
 
-        return 1;
+	return 1;
 }
 
-int right_side(point *p, plane *alpha){
+int right_side(point *p, plane *alpha) {
 	// 1: right side of the plane, 0: otherwise
-	if((alpha->normal.x * p->x + alpha->normal.y * p->y) > (alpha->off + EPSILON)) 
+	if ((alpha->normal.x * p->x + alpha->normal.y * p->y) > (alpha->off
+			+ EPSILON))
 		return 1;
-	else return 0;	
+	else
+		return 0;
 }
 
-int intersect(face *f, plane *alpha) {  
-	int f1 = right_side(f->point[0],alpha);
-	int f2 = right_side(f->point[1],alpha);
-	if(f1 != f2) return 0;
-	else if (f1) return 1;
-	else return -1;
+int intersect(face *f, plane *alpha) {
+	int f1 = right_side(f->point[0], alpha);
+	int f2 = right_side(f->point[1], alpha);
+	if (f1 != f2)
+		return 0;
+	else if (f1)
+		return 1;
+	else
+		return -1;
 }
 
-//Returns 1 if point is above the face, -1 if point is below and
+//Returns 1 if point is above the face, -1 if point is below the face and
 //0 if point intersects the face
 int pointLocationRelativeToFace(face *face, point *p) {
 	float slope, beta;
 	slope = (face->point[1]->y - face->point[0]->y) / (face->point[1]->x
 			- face->point[0]->x);
-	beta = slope * face->point[0]->x - face->point[0]->y;
-	if (p->y > p->x * slope + beta)
+	beta = -1 * (slope * face->point[0]->x - face->point[0]->y);
+	if (p->y > slope * p->x + beta)
 		return 1;
-	if (p->y < p->x * slope + beta)
+	if (p->y < slope * p->x + beta)
 		return -1;
 	return 0;
+
 }
