@@ -126,7 +126,7 @@ int pointLocationRelativeToFace(face *face, point *p) {
 	float slope, beta;
 	slope = (face->point[1]->y - face->point[0]->y) / (face->point[1]->x
 			- face->point[0]->x);
-	beta = -1 * (slope * face->point[0]->x - face->point[0]->y);
+	beta = face->point[0]->y - slope * face->point[0]->x;
 	if (p->y > slope * p->x + beta)
 		return 1;
 	if (p->y < slope * p->x + beta)
