@@ -1,6 +1,6 @@
 #include "geometry.h"
 #include <math.h>
-#include <stdio.h>"
+#include <stdio.h>
 
 /* geometry */
 
