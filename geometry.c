@@ -121,25 +121,15 @@ int intersect(face *f, plane *alpha) {
 }
 
 //Returns 1 if point is above the face, -1 if point is below the face and
-//0 if point intersects the face, return 2 if the slope is undefined
+//0 if point intersects the face
 int pointLocationRelativeToFace(face *face, point *p) {
-	float m, b;
-
-	if(face->point[1]->x - face->point[0]->x == 0){
-		return 2;
-	}
-	//m = (y2-y1)/(x2-x1) (slope)
-	m = (face->point[1]->y - face->point[0]->y) / (face->point[1]->x
-			- face->point[0]->x);
-
-	//y = mx + b (line equation)
-	//y - mx = b
-	b = face->point[0]->y - m * face->point[0]->x;
-
-	if (p->y > m * p->x + b)
-		return 1;
-	if (p->y < m * p->x + b)
-		return -1;
-	return 0;
-
+	float pos;
+   // (x1 - x0)*(y - y0) - (y1 - y0)*(x - x0)
+   pos = (face->point[1]->x - face->point[0]->x)*(p->y - face->point[0]->y) -
+         (face->point[1]->y - face->point[0]->y)*(p->x - face->point[0]->x);
+   if (pos > 0) 
+      return 1;
+   else if (pos < 0)
+      return -1;
+   else return 0;
 }

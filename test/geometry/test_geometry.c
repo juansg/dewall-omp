@@ -34,22 +34,22 @@ int main(){
       f.point[0] = &(P.point[0]);
       f.point[1] = &(P.point[1]);
       loc = pointLocationRelativeToFace(&f, &(P.point[2]));
-      printf("\nPoint (%f, %f) is %s the face [(%f, %f)(%f, %f)] (loc = %d)",
-         P.point[2].x, P.point[2].y, loc? (loc == 1? "above": "below") : "on",
+      printf("\nPoint (%f, %f) is on the %s of the face [(%f, %f)(%f, %f)] (loc = %d)",
+         P.point[2].x, P.point[2].y, loc? (loc == 1? "right": "left") : "top",
          f.point[0]->x, f.point[0]->y, f.point[1]->x, f.point[1]->y, loc);
 
       f.point[0] = &(P.point[1]);
       f.point[1] = &(P.point[2]);
       loc = pointLocationRelativeToFace(&f, &(P.point[0]));
-      printf("\nPoint (%f, %f) is %s the face [(%f, %f)(%f, %f)] (loc = %d)",
-         P.point[0].x, P.point[0].y, loc? (loc == 1? "above": "below") : "on",
+      printf("\nPoint (%f, %f) is on the %s of the face [(%f, %f)(%f, %f)] (loc = %d)",
+         P.point[0].x, P.point[0].y, loc? (loc == 1? "right": "left") : "top",
          f.point[0]->x, f.point[0]->y, f.point[1]->x, f.point[1]->y, loc);
       
       f.point[0] = &(P.point[2]);
       f.point[1] = &(P.point[0]);
       loc = pointLocationRelativeToFace(&f, &(P.point[1]));
-      printf("\nPoint (%f, %f) is %s the face [(%f, %f)(%f, %f)] (loc = %d)",
-         P.point[1].x, P.point[1].y, loc? (loc == 1? "above": "below") : "on",
+      printf("\nPoint (%f, %f) is on the %s of the face [(%f, %f)(%f, %f)] (loc = %d)",
+         P.point[1].x, P.point[1].y, loc? (loc == 1? "right": "left") : "top",
          f.point[0]->x, f.point[0]->y, f.point[1]->x, f.point[1]->y, loc);      
 
       } 
@@ -72,20 +72,20 @@ void test_pointLocationRelativeToFace(){
 
 	c.x = c.y = 5;
    loc = pointLocationRelativeToFace(&f, &c);
-   printf("\nPoint (%f, %f) is %s the face [(%f, %f)(%f, %f)] (loc = %d)",
-      c.x, c.y, loc? (loc == 1? "above": "below") : "on",
+   printf("\nPoint (%f, %f) is on the %s of the face [(%f, %f)(%f, %f)] (loc = %d)",
+      c.x, c.y, loc? (loc == 1? "right": "left") : "top",
       f.point[0]->x, f.point[0]->y, f.point[1]->x, f.point[1]->y, loc);
 
   	c.x = c.y = 7.5;
    loc = pointLocationRelativeToFace(&f, &c);
-   printf("\nPoint (%f, %f) is %s the face [(%f, %f)(%f, %f)] (loc = %d)",
-      c.x, c.y, loc? (loc == 1? "above": "below") : "on",
+   printf("\nPoint (%f, %f) is on the %s of the face [(%f, %f)(%f, %f)] (loc = %d)",
+      c.x, c.y, loc? (loc == 1? "right": "left") : "top",
       f.point[0]->x, f.point[0]->y, f.point[1]->x, f.point[1]->y, loc);
 
 	c.x = c.y = 15;
    loc = pointLocationRelativeToFace(&f, &c);
-   printf("\nPoint (%f, %f) is %s the face [(%f, %f)(%f, %f)] (loc = %d)\n\n",
-      c.x, c.y, loc? (loc == 1? "above": "below") : "on",
+   printf("\nPoint (%f, %f) is on the %s of the face [(%f, %f)(%f, %f)] (loc = %d)\n\n",
+      c.x, c.y, loc? (loc == 1? "right": "left") : "top",
       f.point[0]->x, f.point[0]->y, f.point[1]->x, f.point[1]->y, loc);
 
 }
