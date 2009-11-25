@@ -120,7 +120,7 @@ int intersect(face *f, plane *alpha) {
 		return -1;
 }
 
-//Returns 1 if point is above the face, -1 if point is below the face and
+//Returns 1 if point is left of the face, -1 if point is right of the face and
 //0 if point intersects the face
 int pointLocationRelativeToFace(face *face, point *p) {
 	float pos;
