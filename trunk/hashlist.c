@@ -25,14 +25,17 @@ void hash_list(list *l, int size, int (*hash_key)(void *)) {
 	if (size < 5)
 		return;
 	if(!l->hash_list) {	    
+    // Not deallocated: created once and always needed during the algorithm's execution
 		h_list = (hash *)malloc(sizeof(hash));
 		if (h_list) {
 			h_list->size = size;
 			h_list->hash_key = hash_key;
+         // Not deallocated: created once and always needed during the algorithm's execution
 			h_list->hash_elem = (hash_element **)calloc(size,sizeof(hash_element *));		
 			if(h_list->hash_elem)
 				l->hash_list = h_list;
 			else 
+            // Allocated (here) in hash_list
 				free(h_list);
 		}
 	}
@@ -47,7 +50,7 @@ int equal(list *l, pointer elem1, pointer elem2) {
 int insert_list(list *l, pointer object) {
 	list_element *elem;
 	list_element *old_elem;
-
+   // Dealocated in extract_list or delete_current_list
 	elem = (list_element *)malloc(sizeof(list_element));
 	if(!elem)
 		return 0;
@@ -90,7 +93,8 @@ int extract_list(list *l, pointer obj) {
 	if(l->hash_list) 
 		return delete_hash(l, *object);   
 		
-	//TODO: Avoid memory leak
+   // Allocated in insert_list
+	free(elemtofree);
 	return 1;
 }
 
@@ -130,6 +134,7 @@ int delete_current_list(list *l) {
 	if(l->current->prev)
 	 l->current->prev->next = l->current->next;	
 	
+   // Allocated in insert_list 
 	free(l->current);
 	l->current = NULL;
 	l->size--;
@@ -158,30 +163,24 @@ int delete_list(list *l, pointer object) {
 }
 
 int insert_hash(hash *hl, list_element *elem) {
-	printf("\nSIZE %d",hl->size);
-	LOGGER;
-	hash_element *h_elem;
-	LOGGER;
-	long ind = abs(hl->hash_key(elem->obj));
-	LOGGER;
+	hash_element *h_elem;	
+	long ind = abs(hl->hash_key(elem->obj));	
 	ind = ind % (hl->size);
-
-	LOGGER;
-    h_elem = (hash_element *)malloc(sizeof(hash_element));
+	
+   // Deallocated in delete_hash
+   h_elem = (hash_element *)malloc(sizeof(hash_element));
 	if(!h_elem) 
 		return 0;
-
-	LOGGER;
+	
 	h_elem->list_elem = elem;
 	h_elem->next = hl->hash_elem[ind];
 	h_elem->prev = NULL;
 	
-	LOGGER;
-	if (hl->hash_elem[ind]) 
-		hl->hash_elem[ind]->prev = h_elem;
 	
+	if (hl->hash_elem[ind]) 
+		hl->hash_elem[ind]->prev = h_elem;	
 	hl->hash_elem[ind] = h_elem;
-	LOGGER;
+	
 	return 1;	
 }
 
@@ -231,6 +230,7 @@ int delete_hash(list *l, pointer obj) {
 				l->hash_list->hash_elem[ind] = h_elem->next;
 			if(h_elem->next) 
 				(h_elem->next)->prev = h_elem->prev;
+         // Allocated in insert_hash
 			free(h_elem);
 			return 1;
 		}

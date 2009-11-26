@@ -54,6 +54,7 @@ void initialize_simplex_list(simplex_list *sl, int size) {
 }
 
 int insert_simplex(simplex *s, simplex_list *sl, point_set *P) {	
+   // Deallocated in write_simplex_list
    simplex_index *simp = (simplex_index *)malloc(sizeof(simplex_index));
    
    simp->index[0] = s->face[0]->point[0] - P->base_point;
@@ -64,7 +65,9 @@ int insert_simplex(simplex *s, simplex_list *sl, point_set *P) {
       simp->index[2] = s->face[1]->point[0] - P->base_point;
    else 
       simp->index[2] = s->face[1]->point[1] - P->base_point;
-   //free s     
+
+   // Alocated in build_simplex function   
+   free(s);
    return insert_list(sl, simp);
 }
 
@@ -73,6 +76,7 @@ int extract_simplex(simplex_index **s, simplex_list *sl) {
 }
 
 int build_simplex(simplex **s, face *f, point *p) {
+   // Deallocated in insert_simplex function 
 	*s = (simplex *)malloc(sizeof(simplex));
 	
 	if (!(*s))
@@ -80,6 +84,7 @@ int build_simplex(simplex **s, face *f, point *p) {
 		
 	(*s)->face[0] = (*s)->face[1] = (*s)->face[2] = NULL;
 	
+   // Deallocated in dewall function
 	(*s)->face[0] = (face *)malloc(sizeof(face));
 	(*s)->face[1] = (face *)malloc(sizeof(face));
 	(*s)->face[2] = (face *)malloc(sizeof(face));
