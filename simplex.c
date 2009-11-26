@@ -30,8 +30,12 @@ int extract_face(face **f, face_list *AFL) {
 	return extract_list(AFL, f);
 }
 int update_face(face *f, face_list *AFL) {
-	if (member_list(AFL, f))
+	if (member_list(AFL, f)){
 		delete_list(AFL, f);
+      printf("\nDeleting face: (%f, %f)(%f, %f)", 
+                  f->point[0]->x, f->point[0]->y,
+                  f->point[1]->x, f->point[1]->y);
+   }
 	else 
 		insert_list(AFL, f);
 }
@@ -76,11 +80,18 @@ int build_simplex(simplex **s, face *f, point *p) {
 	(*s)->face[0]->point[0] = f->point[0];
 	(*s)->face[0]->point[1] = f->point[1];
 	
-	(*s)->face[1]->point[0] = f->point[1];
+	(*s)->face[1]->point[0] = f->point[0];
 	(*s)->face[1]->point[1] = p;
 	
 	(*s)->face[2]->point[0] = p;
-	(*s)->face[2]->point[1] = f->point[0];	
+	(*s)->face[2]->point[1] = f->point[1];	
 	
 	return 1;
+}
+
+void revert_face(face *f){
+   point *p;
+   p = f->point[0];
+   f->point[0] = f->point[1];
+   f->point[1] = p;   
 }
