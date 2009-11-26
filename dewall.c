@@ -8,7 +8,7 @@ void print_face_list(FILE *fp, face_list *l) {
     while (curr) {
       f = (face *)curr->obj;
       if (f)
-        fprintf(stdout, "face: (%f, %f); (%f, %f)\n", 
+        fprintf(stdout, "face: (%.3f, %.3f); (%.3f, %.3f)\n", 
         f->point[0]->x, f->point[0]->y, f->point[1]->x, f->point[1]->y); 
       curr = curr->next;
     }
@@ -74,7 +74,7 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax) {
             insert_simplex(t,SL);
             for(i = 0; i < 3; i++){                
                 if (!equal_face(t->face[i], f)){
-                  printf("\nFace to insert: (%f, %f)(%f, %f)", 
+                  printf("\nFace to insert: (%.3f, %.3f)(%.3f, %.3f)", 
                   t->face[i]->point[0]->x, t->face[i]->point[0]->y,
                   t->face[i]->point[1]->x, t->face[i]->point[1]->y);
                    switch (intersect(t->face[i],&alpha)) {
@@ -189,7 +189,7 @@ int make_first_simplex(point_set *P, simplex **s){
    f.point[0] = &(P->point[P->size/2-1]);	
 
    // select a second point p2 such that p2 is the nearest point to p1 on the other side of alpha
-   //printf("minimum distance: %f\n", minimum_distance(f.point[0], P, P->size/2, P->size, &min_index));
+   //printf("minimum distance: %.3f\n", minimum_distance(f.point[0], P, P->size/2, P->size, &min_index));
    minimum_distance(f.point[0], P, P->size/2, P->size, &min_index);
     if (!valid_index(P,min_index))
       return 0;
@@ -198,7 +198,7 @@ int make_first_simplex(point_set *P, simplex **s){
    // search the point p3 such that the circum-circle around the 1-face (p1, p2) and the point p3 has the minimum
    //radius
 
-   //printf("minimum radius: %f\n", minimum_radius(f.point[0], f.point[1], P, 0, P->size, &min_index));
+   //printf("minimum radius: %.3f\n", minimum_radius(f.point[0], f.point[1], P, 0, P->size, &min_index));
    minimum_radius(f.point[0], f.point[1], P, 0, P->size, &min_index);
   if (!valid_index(P,min_index))
       return 0;
@@ -211,7 +211,7 @@ int make_first_simplex(point_set *P, simplex **s){
    build_simplex(s, &f, p3);
    revert_face((*s)->face[0]);
 
-   printf("\nSimplex: [(%f, %f)(%f, %f)] [(%f, %f)(%f, %f)] [(%f, %f)(%f, %f)]!\n",
+   printf("\nSimplex: [(%.3f, %.3f)(%.3f, %.3f)] [(%.3f, %.3f)(%.3f, %.3f)] [(%.3f, %.3f)(%.3f, %.3f)]!\n",
            (*s)->face[0]->point[0]->x, (*s)->face[0]->point[0]->y, (*s)->face[0]->point[1]->x, (*s)->face[0]->point[1]->y,
            (*s)->face[1]->point[0]->x, (*s)->face[1]->point[0]->y, (*s)->face[1]->point[1]->x, (*s)->face[1]->point[1]->y,
            (*s)->face[2]->point[0]->x, (*s)->face[2]->point[0]->y, (*s)->face[2]->point[1]->x, (*s)->face[2]->point[1]->y);  
@@ -239,7 +239,7 @@ int make_simplex(face *f, point_set *P, simplex **s){
       return 0;
 
    build_simplex(s, f, &(P->point[min_index]));
-   printf("\nSimplex: [(%f, %f)(%f, %f)] [(%f, %f)(%f, %f)] [(%f, %f)(%f, %f)]!\n",
+   printf("\nSimplex: [(%.3f, %.3f)(%.3f, %.3f)] [(%.3f, %.3f)(%.3f, %.3f)] [(%.3f, %.3f)(%.3f, %.3f)]!\n",
            (*s)->face[0]->point[0]->x, (*s)->face[0]->point[0]->y, (*s)->face[0]->point[1]->x, (*s)->face[0]->point[1]->y,
            (*s)->face[1]->point[0]->x, (*s)->face[1]->point[0]->y, (*s)->face[1]->point[1]->x, (*s)->face[1]->point[1]->y,
            (*s)->face[2]->point[0]->x, (*s)->face[2]->point[0]->y, (*s)->face[2]->point[1]->x, (*s)->face[2]->point[1]->y);  
