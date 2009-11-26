@@ -1,5 +1,6 @@
 #include "simplex.h"
 #include <stdlib.h>
+#include <string.h>
 
 /* face list handling */
 
@@ -52,14 +53,40 @@ int hash_simplex(void *vs) {
 		hash_face(&(s->face[2])));
 }
 
-void initialize_simplex_list(simplex_list *E, int size) {
+void initialize_simplex_list(simplex_list *sl, int size) {
 	// Not gonna use the equal function
-	initialize_list(E,sizeof(simplex *),NULL);
-   // hash_list(E, size, hash_simplex);
+	initialize_list(sl,sizeof(char *),NULL);
 }
 
-int insert_simplex(simplex *t, simplex_list *E) {	
-	return insert_list(E, t);
+int insert_simplex(simplex *s, simplex_list *sl, point_set *P) {	
+   int index[3];  
+   char simp_temp[100];
+   char *simp;
+   
+   index[0] = s->face[0]->point[0] - P->point;
+   index[1] = s->face[0]->point[1] - P->point;
+
+   if ((s->face[1]->point[0] - P->point) != index[0] && (s->face[1]->point[0] - P->point) != index[1])
+      index[2] = s->face[1]->point[0] - P->point;
+   else 
+      index[2] = s->face[1]->point[1] - P->point;
+   //free s
+   snprintf(simp_temp,100,"(%.3f, %.3f)(%.3f, %.3f)(%.3f, %.3f)",
+       P->point[index[0]].x, P->point[index[0]].y,
+       P->point[index[1]].x, P->point[index[1]].y,
+       P->point[index[2]].x, P->point[index[2]].y);
+
+   simp = (char *)malloc(sizeof(char)*strlen(simp_temp));
+   if (!simp)
+      return 0;
+
+   simp[0] = 0;
+   strncpy(simp, simp_temp, strlen(simp_temp));      
+   return insert_list(sl, simp);
+}
+
+int extract_simplex(char **s, simplex_list *sl) {
+	return extract_list(sl, s);   
 }
 
 int build_simplex(simplex **s, face *f, point *p) {

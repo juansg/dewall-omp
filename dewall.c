@@ -14,6 +14,18 @@ void print_face_list(FILE *fp, face_list *l) {
     }
 }
 
+void print_simplex_list(FILE *fp, simplex_list *l, point_set *P) {
+	 printf("\nList size = %d\n", l->size);
+    list_element *curr = l->first;
+    char *simp = NULL;
+    while (curr) {
+      simp = (char *)curr->obj;
+      if (simp)
+         fprintf(fp, "%s\n", simp);
+      curr = curr->next;
+    }
+}
+
 void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax) {
    printf("\n--------------------------------------------");
    printf("\nP:");
@@ -45,7 +57,7 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax) {
 	    if (make_first_simplex(P,&t)){
          for(i = 0; i < 3; i++) 
             insert_face(t->face[i],AFL);	
-	      insert_simplex(t,SL);
+	      insert_simplex(t,SL,P);
       }
 	}
 	printf("\nAFL:");
@@ -70,21 +82,21 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax) {
   // Building the wall for the faces in the middle
 	while(AFLa.size > 0){
         extract_face(&f,&AFLa);
-        if (make_simplex(f, P, &t)){            
-            insert_simplex(t,SL);
+        if (make_simplex(f, P, &t)){           
             for(i = 0; i < 3; i++){                
                 if (!equal_face(t->face[i], f)){
                   printf("\nFace to insert: (%.3f, %.3f)(%.3f, %.3f)", 
                   t->face[i]->point[0]->x, t->face[i]->point[0]->y,
                   t->face[i]->point[1]->x, t->face[i]->point[1]->y);
                    switch (intersect(t->face[i],&alpha)) {
-                       case  0: update_face(t->face[i], &AFLa); printf("\nAFLa"); break;
-                       case -1: update_face(t->face[i], &AFL1); printf("\nAFL1");break;
-                       case  1: update_face(t->face[i], &AFL2); printf("\nAFL2");break;
+                       case  0: update_face(t->face[i], &AFLa); break;
+                       case -1: update_face(t->face[i], &AFL1); break;
+                       case  1: update_face(t->face[i], &AFL2); break;
                    }
                 }               
             }  
             printf("\n");
+            insert_simplex(t,SL,P);
         }		
 	}
 
@@ -104,6 +116,8 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax) {
 	if (AFL2.size > 0)
 		deWall(&P2, &AFL2, SL, invert_axis(ax));
 	
+   //printf("\nSimplex list:");
+   //print_simplex_list(stdout, SL);
    //Free Lists...
   
 }
@@ -209,12 +223,7 @@ int make_first_simplex(point_set *P, simplex **s){
     revert_face(&f);
 
    build_simplex(s, &f, p3);
-   revert_face((*s)->face[0]);
-
-   printf("\nSimplex: [(%.3f, %.3f)(%.3f, %.3f)] [(%.3f, %.3f)(%.3f, %.3f)] [(%.3f, %.3f)(%.3f, %.3f)]!\n",
-           (*s)->face[0]->point[0]->x, (*s)->face[0]->point[0]->y, (*s)->face[0]->point[1]->x, (*s)->face[0]->point[1]->y,
-           (*s)->face[1]->point[0]->x, (*s)->face[1]->point[0]->y, (*s)->face[1]->point[1]->x, (*s)->face[1]->point[1]->y,
-           (*s)->face[2]->point[0]->x, (*s)->face[2]->point[0]->y, (*s)->face[2]->point[1]->x, (*s)->face[2]->point[1]->y);  
+   revert_face((*s)->face[0]);    
    return 1;
 }
 
@@ -238,11 +247,7 @@ int make_simplex(face *f, point_set *P, simplex **s){
    if (!valid_index(P, min_index))
       return 0;
 
-   build_simplex(s, f, &(P->point[min_index]));
-   printf("\nSimplex: [(%.3f, %.3f)(%.3f, %.3f)] [(%.3f, %.3f)(%.3f, %.3f)] [(%.3f, %.3f)(%.3f, %.3f)]!\n",
-           (*s)->face[0]->point[0]->x, (*s)->face[0]->point[0]->y, (*s)->face[0]->point[1]->x, (*s)->face[0]->point[1]->y,
-           (*s)->face[1]->point[0]->x, (*s)->face[1]->point[0]->y, (*s)->face[1]->point[1]->x, (*s)->face[1]->point[1]->y,
-           (*s)->face[2]->point[0]->x, (*s)->face[2]->point[0]->y, (*s)->face[2]->point[1]->x, (*s)->face[2]->point[1]->y);  
+   build_simplex(s, f, &(P->point[min_index]));    
    return 1;
 }
 

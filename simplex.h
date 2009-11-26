@@ -16,8 +16,10 @@ void print_points (FILE *fp, point_set *P);
 int write_simplex_list(char *filename, simplex_list *sl);
 
 /* Face list handling */
+void initialize_simplex_list(simplex_list *sl, int size);
 int build_simplex(simplex **s, face *f, point *p);
-int insert_simplex(simplex *t, simplex_list *E);
+int insert_simplex(simplex *s, simplex_list *sl, point_set *P);
+int extract_simplex(char **s, simplex_list *sl);
 
 int insert_face(face *f, face_list *AFLa);
 int extract_face(face **f, face_list *AFL);
