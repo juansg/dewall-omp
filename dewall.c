@@ -15,10 +15,6 @@ void print_face_list(FILE *fp, face_list *l) {
 }
 
 void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax) {
-	// How can I triangulate less than 3 points?
-	if (P->size < 3)
-	 return;
-	
    printf("\n--------------------------------------------");
    printf("\nP:");
    print_points(stdout, P);
@@ -66,15 +62,13 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax) {
 	
 	printf("\nAFLa:");
 	print_face_list(stdout, &AFLa);
-   printf("\nAFL1:");
+  printf("\nAFL1:");
 	print_face_list(stdout, &AFL1);
-  	printf("\nAFL2:");
+  printf("\nAFL2:");
 	print_face_list(stdout, &AFL2);
 	
-   int mi = 10;
   // Building the wall for the faces in the middle
-	while(AFLa.size > 0 && mi){
-     //   mi--;
+	while(AFLa.size > 0){
         extract_face(&f,&AFLa);
         if (make_simplex(f, P, &t)){            
             insert_simplex(t,SL);
@@ -100,8 +94,6 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax) {
 	print_face_list(stdout, &AFL1);
   	printf("\nAFL2:");
 	print_face_list(stdout, &AFL2);
-
-   return;
 
 	printf("\n--------------------------------------------");
   /* Recursive Triangulation */
@@ -212,13 +204,17 @@ int make_first_simplex(point_set *P, simplex **s){
       return 0;
 
    p3 = &(P->point[min_index]);      
-   printf("\nGot the first simplex: (%f, %f) (%f, %f) (%f, %f)!\n",
-           f.point[0]->x, f.point[0]->y,
-           f.point[1]->x, f.point[1]->y, 
-           p3->x, p3->y);  
-   
-   revert_face(&f);
+
+   if (pointLocationRelativeToFace(&f,p3) != 1)
+    revert_face(&f);
+
    build_simplex(s, &f, p3);
+   revert_face((*s)->face[0]);
+
+   printf("\nSimplex: [(%f, %f)(%f, %f)] [(%f, %f)(%f, %f)] [(%f, %f)(%f, %f)]!\n",
+           (*s)->face[0]->point[0]->x, (*s)->face[0]->point[0]->y, (*s)->face[0]->point[1]->x, (*s)->face[0]->point[1]->y,
+           (*s)->face[1]->point[0]->x, (*s)->face[1]->point[0]->y, (*s)->face[1]->point[1]->x, (*s)->face[1]->point[1]->y,
+           (*s)->face[2]->point[0]->x, (*s)->face[2]->point[0]->y, (*s)->face[2]->point[1]->x, (*s)->face[2]->point[1]->y);  
    return 1;
 }
 
@@ -241,11 +237,12 @@ int make_simplex(face *f, point_set *P, simplex **s){
 
    if (!valid_index(P, min_index))
       return 0;
-    printf("\nGot the simplex: (%f, %f) (%f, %f) (%f, %f)!\n",
-           f->point[0]->x, f->point[0]->y,
-           f->point[1]->x, f->point[1]->y, 
-           P->point[min_index].x, P->point[min_index].y);  
+
    build_simplex(s, f, &(P->point[min_index]));
+   printf("\nSimplex: [(%f, %f)(%f, %f)] [(%f, %f)(%f, %f)] [(%f, %f)(%f, %f)]!\n",
+           (*s)->face[0]->point[0]->x, (*s)->face[0]->point[0]->y, (*s)->face[0]->point[1]->x, (*s)->face[0]->point[1]->y,
+           (*s)->face[1]->point[0]->x, (*s)->face[1]->point[0]->y, (*s)->face[1]->point[1]->x, (*s)->face[1]->point[1]->y,
+           (*s)->face[2]->point[0]->x, (*s)->face[2]->point[0]->y, (*s)->face[2]->point[1]->x, (*s)->face[2]->point[1]->y);  
    return 1;
 }
 

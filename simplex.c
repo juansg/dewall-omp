@@ -55,7 +55,7 @@ int hash_simplex(void *vs) {
 void initialize_simplex_list(simplex_list *E, int size) {
 	// Not gonna use the equal function
 	initialize_list(E,sizeof(simplex *),NULL);
-    hash_list(E, size, hash_simplex);
+   // hash_list(E, size, hash_simplex);
 }
 
 int insert_simplex(simplex *t, simplex_list *E) {	
@@ -79,10 +79,10 @@ int build_simplex(simplex **s, face *f, point *p) {
 
 	(*s)->face[0]->point[0] = f->point[0];
 	(*s)->face[0]->point[1] = f->point[1];
-	
+
 	(*s)->face[1]->point[0] = f->point[0];
 	(*s)->face[1]->point[1] = p;
-	
+ 
 	(*s)->face[2]->point[0] = p;
 	(*s)->face[2]->point[1] = f->point[1];	
 	
