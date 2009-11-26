@@ -40,7 +40,7 @@ void print_points (FILE *fp, point_set *P) {
   if(fp) {    
     fprintf(fp, "\nsize: %d\n\n", P->size);
     for(i = 0; i < P->size; i++) {      
-          fprintf(fp, "(%f %f)\n",P->point[i].x, P->point[i].y);
+          fprintf(fp, "(%.3f %.3f)\n",P->point[i].x, P->point[i].y);
     }
   }
 }
@@ -57,7 +57,7 @@ int write_simplex_list(char *filename, simplex_list *sl) {
   while (curr){
 	  s = (simplex *)curr->obj;
 		if (s){	  
-        fprintf(fp, "[(%f, %f)(%f, %f)] [(%f, %f)(%f, %f)] [(%f, %f)(%f, %f)]\n",
+        fprintf(fp, "[(%.3f, %f)(%.3f, %.3f)] [(%.3f, %.3f)(%.3f, %.3f)] [(%.3f, %.3f)(%.3f, %.3f)]\n",
            s->face[0]->point[0]->x, s->face[0]->point[0]->y, s->face[0]->point[1]->x, s->face[0]->point[1]->y,
            s->face[1]->point[0]->x, s->face[1]->point[0]->y, s->face[1]->point[1]->x, s->face[1]->point[1]->y,
            s->face[2]->point[0]->x, s->face[2]->point[0]->y, s->face[2]->point[1]->x, s->face[2]->point[1]->y);  
