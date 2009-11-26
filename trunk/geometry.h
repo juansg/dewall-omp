@@ -7,7 +7,8 @@ typedef struct {
 } point;
 
 typedef struct {
-    point* point;
+    point *base_point;
+    point **point;  
     int size;
 } point_set;
 

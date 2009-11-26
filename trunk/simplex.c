@@ -1,6 +1,5 @@
 #include "simplex.h"
 #include <stdlib.h>
-#include <string.h>
 
 /* face list handling */
 
@@ -32,10 +31,7 @@ int extract_face(face **f, face_list *AFL) {
 }
 int update_face(face *f, face_list *AFL) {
 	if (member_list(AFL, f)){
-		delete_list(AFL, f);
-      printf("\nDeleting face: (%f, %f)(%f, %f)", 
-                  f->point[0]->x, f->point[0]->y,
-                  f->point[1]->x, f->point[1]->y);
+		delete_list(AFL, f);     
    }
 	else 
 		insert_list(AFL, f);
@@ -54,38 +50,25 @@ int hash_simplex(void *vs) {
 }
 
 void initialize_simplex_list(simplex_list *sl, int size) {
-	// Not gonna use the equal function
 	initialize_list(sl,sizeof(char *),NULL);
 }
 
 int insert_simplex(simplex *s, simplex_list *sl, point_set *P) {	
-   int index[3];  
-   char simp_temp[100];
-   char *simp;
+   simplex_index *simp = (simplex_index *)malloc(sizeof(simplex_index));
    
-   index[0] = s->face[0]->point[0] - P->point;
-   index[1] = s->face[0]->point[1] - P->point;
+   simp->index[0] = s->face[0]->point[0] - P->base_point;
+   simp->index[1] = s->face[0]->point[1] - P->base_point;
 
-   if ((s->face[1]->point[0] - P->point) != index[0] && (s->face[1]->point[0] - P->point) != index[1])
-      index[2] = s->face[1]->point[0] - P->point;
+   if ((s->face[1]->point[0] - P->base_point) != simp->index[0] && 
+         (s->face[1]->point[0] - P->base_point) != simp->index[1])
+      simp->index[2] = s->face[1]->point[0] - P->base_point;
    else 
-      index[2] = s->face[1]->point[1] - P->point;
-   //free s
-   snprintf(simp_temp,100,"(%.3f, %.3f)(%.3f, %.3f)(%.3f, %.3f)",
-       P->point[index[0]].x, P->point[index[0]].y,
-       P->point[index[1]].x, P->point[index[1]].y,
-       P->point[index[2]].x, P->point[index[2]].y);
-
-   simp = (char *)malloc(sizeof(char)*strlen(simp_temp));
-   if (!simp)
-      return 0;
-
-   simp[0] = 0;
-   strncpy(simp, simp_temp, strlen(simp_temp));      
+      simp->index[2] = s->face[1]->point[1] - P->base_point;
+   //free s     
    return insert_list(sl, simp);
 }
 
-int extract_simplex(char **s, simplex_list *sl) {
+int extract_simplex(simplex_index **s, simplex_list *sl) {
 	return extract_list(sl, s);   
 }
 
