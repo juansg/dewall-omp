@@ -14,6 +14,7 @@ int read_points(char *filename, point_set *P) {
   fp=fopen(filename,"r");
   if(fp) {
     fscanf(fp,"%d",&(P->size));
+    // Not deallocated: created once and always needed during the algorithm's execution
     P->base_point = (point *)malloc(sizeof(point)*P->size);
     P->point = (point **)malloc(sizeof(point *)*P->size);
     if(P->point)
@@ -59,14 +60,19 @@ int write_simplex_list(char *filename, simplex_list *sl, point_set *P) {
     
   printf("\nWriting simplex list to file %s.\n\n", filename);  
 
+  if (!sl || !P || !filename) return 0;
+
   fprintf(fp, "%d\n\n", sl->size);
-  while (sl->size > 0){
-	    if (extract_simplex(&simp,sl))		  
+  while (sl->size > 0)
+	    if (extract_simplex(&simp,sl)){		  
            fprintf(fp, "(%.3f, %.3f)(%.3f, %.3f)(%.3f, %.3f)\n",
             P->base_point[simp->index[0]].x, P->base_point[simp->index[0]].y,
             P->base_point[simp->index[1]].x, P->base_point[simp->index[1]].y,
             P->base_point[simp->index[2]].x, P->base_point[simp->index[2]].y);
-  }
+
+            // Alocated in insert_simplex
+            free(simp);
+      }
   
   fclose(fp);
   return 1;

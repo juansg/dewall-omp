@@ -1,5 +1,6 @@
 #include "dewall.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 void print_face_list(FILE *fp, face_list *l) {
 	printf("\nList size = %d\n", l->size);
@@ -74,14 +75,7 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_lev
             case -1: insert_face(f, &AFL1); break;
             case  1: insert_face(f, &AFL2); break;
         }
-	}
-	
-	printf("\nAFLa:");
-	print_face_list(stdout, &AFLa);
-  printf("\nAFL1:");
-	print_face_list(stdout, &AFL1);
-  printf("\nAFL2:");
-	print_face_list(stdout, &AFL2);
+	}	
 	
   // Building the wall for the faces in the middle
 	while(AFLa.size > 0){
@@ -96,31 +90,22 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_lev
                    }
                 }               
             }  
-            printf("\n");
+            // Allocated in build_simplex function
+            free(f);
             insert_simplex(t,SL,P);
         }		
 	}
 
-   printf("\nAFLa:");
-	print_face_list(stdout, &AFLa);
-   printf("\nAFL1:");
-	print_face_list(stdout, &AFL1);
-  	printf("\nAFL2:");
-	print_face_list(stdout, &AFL2);
+   printf("\nSimplex list:");
+   print_simplex_list(stdout, SL,P);
 
-	printf("\n--------------------------------------------");
   /* Recursive Triangulation */
 	#pragma omp task
 	if (AFL1.size > 0)
 		deWall(&P1, &AFL1, SL, invert_axis(ax), rec_level);
 	#pragma omp task
 	if (AFL2.size > 0)
-		deWall(&P2, &AFL2, SL, invert_axis(ax), rec_level);
-	
-   //printf("\nSimplex list:");
-   //print_simplex_list(stdout, SL);
-   //Free Lists...
-  
+		deWall(&P2, &AFL2, SL, invert_axis(ax), rec_level);  
 }
 
 void pointset_partition(point_set *P, plane* alpha, Axis ax, point_set *P1, point_set *P2){
