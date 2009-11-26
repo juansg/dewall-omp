@@ -23,3 +23,4 @@ int insert_face(face *f, face_list *AFLa);
 int extract_face(face **f, face_list *AFL);
 int update_face(face *f1, face_list *AFLa);
 void initialize_face_list(face_list *AFL, int size);
+void revert_face(face *f);
