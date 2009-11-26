@@ -5,7 +5,7 @@
 
 //TODO: create real list initialization
 
-void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax);
+void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_level);
 void pointset_partition(point_set *P, plane* alpha, Axis ax, point_set *P1, point_set *P2);
 
 int make_first_simplex(point_set *P, simplex **s);

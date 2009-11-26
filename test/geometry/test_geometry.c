@@ -16,50 +16,50 @@ int main() {
 	else {
 		print_points(stdout, &P);
 		if (P.size >= 3) {
-			printf("\ndistance(p1,p2) = %.3f", distance(&(P.point[0]),
-					&(P.point[1])));
-			printf("\ndistance(p1,p3) = %.3f", distance(&(P.point[0]),
-					&(P.point[2])));
-			printf("\ndistance(p2,p3) = %.3f\n", distance(&(P.point[1]),
-					&(P.point[2])));
+			printf("\ndistance(p1,p2) = %.3f", distance(&(P.base_point[0]),
+					&(P.base_point[1])));
+			printf("\ndistance(p1,p3) = %.3f", distance(&(P.base_point[0]),
+					&(P.base_point[2])));
+			printf("\ndistance(p2,p3) = %.3f\n", distance(&(P.base_point[1]),
+					&(P.base_point[2])));
 			printf("\ncircumCircleRadius(p1,p2,p3) = %.3f\n", circumCircleRadius(
-					&(P.point[0]), &(P.point[1]), &(P.point[2])));
+					&(P.base_point[0]), &(P.base_point[1]), &(P.base_point[2])));
 
-			if (circumCircleCentre(&(P.point[0]), &(P.point[1]), &(P.point[2]),
+			if (circumCircleCentre(&(P.base_point[0]), &(P.base_point[1]), &(P.base_point[2]),
 					&centre))
 				printf("\ncircumCircleCentre(p1,p2,p3) = (%.3f,%.3f)", centre.x,
 						centre.y);
 
-			if (circumCircleCentreAndRadius(&(P.point[0]), &(P.point[1]),
-					&(P.point[2]), &centre, &radius))
+			if (circumCircleCentreAndRadius(&(P.base_point[0]), &(P.base_point[1]),
+					&(P.base_point[2]), &centre, &radius))
 				printf(
 						"\ncircumCircleCentreAndRadius(p1,p2,p3,center,rad) = (%.3f,%.3f), "
 							"radius = %.3f\n", centre.x, centre.y, radius);
 
-			f.point[0] = &(P.point[0]);
-			f.point[1] = &(P.point[1]);
-			loc = pointLocationRelativeToFace(&f, &(P.point[2]));
+			f.point[0] = &(P.base_point[0]);
+			f.point[1] = &(P.base_point[1]);
+			loc = pointLocationRelativeToFace(&f, &(P.base_point[2]));
 			printf(
 					"\nPoint (%.3f, %.3f) is on the %s of the face [(%.3f, %.3f)(%.3f, %.3f)] (loc = %d)",
-					P.point[2].x, P.point[2].y, loc ? (loc == 1 ? "right"
+					P.base_point[2].x, P.base_point[2].y, loc ? (loc == 1 ? "right"
 							: "left") : "top", f.point[0]->x, f.point[0]->y,
 					f.point[1]->x, f.point[1]->y, loc);
 
-			f.point[0] = &(P.point[1]);
-			f.point[1] = &(P.point[2]);
-			loc = pointLocationRelativeToFace(&f, &(P.point[0]));
+			f.point[0] = &(P.base_point[1]);
+			f.point[1] = &(P.base_point[2]);
+			loc = pointLocationRelativeToFace(&f, &(P.base_point[0]));
 			printf(
 					"\nPoint (%.3f, %.3f) is on the %s of the face [(%.3f, %.3f)(%.3f, %.3f)] (loc = %d)",
-					P.point[0].x, P.point[0].y, loc ? (loc == 1 ? "right"
+					P.base_point[0].x, P.base_point[0].y, loc ? (loc == 1 ? "right"
 							: "left") : "top", f.point[0]->x, f.point[0]->y,
 					f.point[1]->x, f.point[1]->y, loc);
 
-			f.point[0] = &(P.point[2]);
-			f.point[1] = &(P.point[0]);
-			loc = pointLocationRelativeToFace(&f, &(P.point[1]));
+			f.point[0] = &(P.base_point[2]);
+			f.point[1] = &(P.base_point[0]);
+			loc = pointLocationRelativeToFace(&f, &(P.base_point[1]));
 			printf(
 					"\nPoint (%.3f, %.3f) is on the %s of the face [(%.3f, %.3f)(%.3f, %.3f)] (loc = %d)",
-					P.point[1].x, P.point[1].y, loc ? (loc == 1 ? "right"
+					P.base_point[1].x, P.base_point[1].y, loc ? (loc == 1 ? "right"
 							: "left") : "top", f.point[0]->x, f.point[0]->y,
 					f.point[1]->x, f.point[1]->y, loc);
 

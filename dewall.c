@@ -17,18 +17,22 @@ void print_face_list(FILE *fp, face_list *l) {
 void print_simplex_list(FILE *fp, simplex_list *l, point_set *P) {
 	 printf("\nList size = %d\n", l->size);
     list_element *curr = l->first;
-    char *simp = NULL;
+    simplex_index *simp = NULL;
     while (curr) {
-      simp = (char *)curr->obj;
+      simp = (simplex_index *)curr->obj;
       if (simp)
-         fprintf(fp, "%s\n", simp);
+         fprintf(fp, "(%.3f, %.3f)(%.3f, %.3f)(%.3f, %.3f)\n",
+            P->base_point[simp->index[0]].x, P->base_point[simp->index[0]].y,
+            P->base_point[simp->index[1]].x, P->base_point[simp->index[1]].y,
+            P->base_point[simp->index[2]].x, P->base_point[simp->index[2]].y);
       curr = curr->next;
     }
 }
 
-void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax) {
-   printf("\n--------------------------------------------");
-   printf("\nP:");
+void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_level) {
+   printf("\n--------------------------------------------\n");
+   printf("Dewall: %d\n", rec_level++);
+   printf("\n:");
    print_points(stdout, P);
    printf("Axis: %s\n", ax?"Y":"X");
 	
@@ -84,10 +88,7 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax) {
         extract_face(&f,&AFLa);
         if (make_simplex(f, P, &t)){           
             for(i = 0; i < 3; i++){                
-                if (!equal_face(t->face[i], f)){
-                  printf("\nFace to insert: (%.3f, %.3f)(%.3f, %.3f)", 
-                  t->face[i]->point[0]->x, t->face[i]->point[0]->y,
-                  t->face[i]->point[1]->x, t->face[i]->point[1]->y);
+                if (!equal_face(t->face[i], f)){               
                    switch (intersect(t->face[i],&alpha)) {
                        case  0: update_face(t->face[i], &AFLa); break;
                        case -1: update_face(t->face[i], &AFL1); break;
@@ -111,10 +112,10 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax) {
   /* Recursive Triangulation */
 	#pragma omp task
 	if (AFL1.size > 0)
-		deWall(&P1, &AFL1, SL, invert_axis(ax));
+		deWall(&P1, &AFL1, SL, invert_axis(ax), rec_level);
 	#pragma omp task
 	if (AFL2.size > 0)
-		deWall(&P2, &AFL2, SL, invert_axis(ax));
+		deWall(&P2, &AFL2, SL, invert_axis(ax), rec_level);
 	
    //printf("\nSimplex list:");
    //print_simplex_list(stdout, SL);
@@ -125,18 +126,18 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax) {
 void pointset_partition(point_set *P, plane* alpha, Axis ax, point_set *P1, point_set *P2){
  switch(ax)
   {
-   case XAxis :	qsort((void *)P->point, (size_t)P->size, sizeof(point), compare_points_X);
+   case XAxis :	qsort((void *)P->point, (size_t)P->size, sizeof(point *), compare_points_X);
 		alpha->normal.x = 1;      
 		alpha->normal.y = 0;  
       //calculates plane position from central elements (n/2)-1 and (n/2)		
-		alpha->off = (P->point[P->size/2-1].x + P->point[P->size/2].x)/2;
+		alpha->off = (P->point[P->size/2-1]->x + P->point[P->size/2]->x)/2;
 		break;
 
-   case YAxis : qsort((void *)P->point, (size_t)P->size, sizeof(point), compare_points_Y);
+   case YAxis : qsort((void *)P->point, (size_t)P->size, sizeof(point *), compare_points_Y);
 		alpha->normal.x = 0;  
 		alpha->normal.y = 1;
       //calculates plane position from central elements (n/2)-1 and (n/2)
-		alpha->off = (P->point[P->size/2-1].y + P->point[P->size/2].y)/2;
+		alpha->off = (P->point[P->size/2-1]->y + P->point[P->size/2]->y)/2;
 		break;
   }
    // P1 contains the first half
@@ -146,6 +147,8 @@ void pointset_partition(point_set *P, plane* alpha, Axis ax, point_set *P1, poin
    // P2 contains the remaining elements
    P2->size = P->size - P1->size;
    P2->point = &(P->point[P1->size]);
+
+   P1->base_point = P2->base_point = P->base_point;
 }
 
 //Return the minimum distance, the minimum index is stored in *i
@@ -156,7 +159,7 @@ float minimum_distance(point *p, point_set *P, int start, int end, int *index){
    dist = min_dist = 999;
 
    for(i = start; i < end; i++) {
-     dist = distance(p, &(P->point[i]));
+     dist = distance(p, P->point[i]);
      if(dist > 0 && dist < min_dist) {
          min_dist = dist;    
          min_index = i;         
@@ -175,8 +178,8 @@ float minimum_radius(point *p1, point *p2, point_set *P, int start, int end, int
    rad = min_rad = 999;
 
    for(i = start; i < end; i++) 
-      if (p1 != &(P->point[i]) && p2 != &(P->point[i])){
-        rad = circumCircleRadius(p1,p2,&(P->point[i]));
+      if (p1 != P->point[i] && p2 != P->point[i]){
+        rad = circumCircleRadius(p1,p2,P->point[i]);
         if(rad > 0 && rad < min_rad) {
             min_rad = rad;    
             min_index = i;         
@@ -200,14 +203,14 @@ int make_first_simplex(point_set *P, simplex **s){
    int min_index;
    
    // select the point p1 nearest to the plane 
-   f.point[0] = &(P->point[P->size/2-1]);	
+   f.point[0] = P->point[P->size/2-1];	
 
    // select a second point p2 such that p2 is the nearest point to p1 on the other side of alpha
    //printf("minimum distance: %.3f\n", minimum_distance(f.point[0], P, P->size/2, P->size, &min_index));
    minimum_distance(f.point[0], P, P->size/2, P->size, &min_index);
     if (!valid_index(P,min_index))
       return 0;
-   f.point[1] = &(P->point[min_index]);
+   f.point[1] = P->point[min_index];
       
    // search the point p3 such that the circum-circle around the 1-face (p1, p2) and the point p3 has the minimum
    //radius
@@ -217,7 +220,7 @@ int make_first_simplex(point_set *P, simplex **s){
   if (!valid_index(P,min_index))
       return 0;
 
-   p3 = &(P->point[min_index]);      
+   p3 = P->point[min_index];      
 
    if (pointLocationRelativeToFace(&f,p3) != 1)
     revert_face(&f);
@@ -235,9 +238,9 @@ int make_simplex(face *f, point_set *P, simplex **s){
    rad = min_rad = 999;
    
    for(i = 0; i < P->size; i++) 
-      if (f->point[0] != &(P->point[i]) && f->point[1] != &(P->point[i]) 
-         && pointLocationRelativeToFace(f,&(P->point[i])) == 1){
-        rad = circumCircleRadius(f->point[0],f->point[1],&(P->point[i]));
+      if (f->point[0] != P->point[i] && f->point[1] != P->point[i] 
+         && pointLocationRelativeToFace(f,P->point[i]) == 1){
+        rad = circumCircleRadius(f->point[0],f->point[1],P->point[i]);
         if(rad > 0 && rad < min_rad) {
             min_rad = rad;    
             min_index = i;         
@@ -247,7 +250,7 @@ int make_simplex(face *f, point_set *P, simplex **s){
    if (!valid_index(P, min_index))
       return 0;
 
-   build_simplex(s, f, &(P->point[min_index]));    
+   build_simplex(s, f, P->point[min_index]);    
    return 1;
 }
 

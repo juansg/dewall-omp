@@ -19,10 +19,10 @@ int main(int argc, char *argv[]) {
 		initialize_simplex_list(&SL, P.size/4);
 
 		// ---- Calculate time from here -----
-		deWall(&P, &AFL, &SL, XAxis);
+		deWall(&P, &AFL, &SL, XAxis, 0);
 		// -----------------------------------
 
-		write_simplex_list(argv[2], &SL);
+		write_simplex_list(argv[2], &SL, &P);
 	}
 	exit(EXIT_SUCCESS);
 }
