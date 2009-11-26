@@ -46,23 +46,17 @@ void print_points (FILE *fp, point_set *P) {
 }
 
 int write_simplex_list(char *filename, simplex_list *sl) {	
-  simplex *s = NULL;
+  char *simp = NULL;
   FILE *fp = fopen(filename,"w");
-  int i = 0, j = 0;
   if (!fp)
     return 0;
     
   printf("\nWriting simplex list to file %s.\n\n", filename);  
-  list_element *curr = sl->first;    
-  while (curr){
-	  s = (simplex *)curr->obj;
-		if (s){	  
-        fprintf(fp, "[(%.3f, %f)(%.3f, %.3f)] [(%.3f, %.3f)(%.3f, %.3f)] [(%.3f, %.3f)(%.3f, %.3f)]\n",
-           s->face[0]->point[0]->x, s->face[0]->point[0]->y, s->face[0]->point[1]->x, s->face[0]->point[1]->y,
-           s->face[1]->point[0]->x, s->face[1]->point[0]->y, s->face[1]->point[1]->x, s->face[1]->point[1]->y,
-           s->face[2]->point[0]->x, s->face[2]->point[0]->y, s->face[2]->point[1]->x, s->face[2]->point[1]->y);  
-	  }  
-	  curr = curr->next;
+
+  fprintf(fp, "%d\n\n", sl->size);
+  while (sl->size > 0){
+	    if (extract_simplex(&simp,sl))		  
+          fprintf(fp, "%s\n", simp);
   }
   
   fclose(fp);
