@@ -56,12 +56,12 @@ int write_simplex_list(char *filename, simplex_list *sl) {
   list_element *curr = sl->first;    
   while (curr){
 	  s = (simplex *)curr->obj;
-	  for (i = 0; i < 3; i++){
-		  if (s)
-			fprintf(fp, "(%f %f) ",
-			s->face[i]->point[0]->x , s->face[i]->point[0]->y);	  
+		if (s){	  
+        fprintf(fp, "[(%f, %f)(%f, %f)] [(%f, %f)(%f, %f)] [(%f, %f)(%f, %f)]\n",
+           s->face[0]->point[0]->x, s->face[0]->point[0]->y, s->face[0]->point[1]->x, s->face[0]->point[1]->y,
+           s->face[1]->point[0]->x, s->face[1]->point[0]->y, s->face[1]->point[1]->x, s->face[1]->point[1]->y,
+           s->face[2]->point[0]->x, s->face[2]->point[0]->y, s->face[2]->point[1]->x, s->face[2]->point[1]->y);  
 	  }  
-	  fprintf(fp, "\n");
 	  curr = curr->next;
   }
   
