@@ -1,4 +1,4 @@
-#include "geometry.h"
+#include "simplex.h"
 #include "ug.h"
 
 #include <stdio.h>
@@ -89,4 +89,65 @@ void print_uniform_grid(uniform_grid *UG){
          }
       }  
    printf("\n\n");
+}
+
+void calc_full_box(face *f, uniform_grid *UG, cell_index *start, cell_index *end, cell_index *dir){
+   if(f->point[0]->x * f->point[1]->x > 0){
+      dir->x = -1;
+      start->x= UG->sizeX-1;
+      end->x = 0;       
+   } else {
+      dir->x=  1;
+      start->x = 0;      
+      end->x = UG->sizeX-1;
+   }
+
+   if(f->point[0]->y * f->point[1]->y > 0){
+      dir->y = -1;
+      start->y = UG->sizeY-1;
+      end->y = 0;
+   } else {
+      dir->y =  1;   
+      start->y = 0;
+      end->y = UG->sizeY-1;
+   }
+}
+
+float scan_full_box(face *f, uniform_grid *UG, cell_index *c1, cell_index *c2,  cell_index *dir, point **p, float *min_radius){return 0;}
+
+float calc_box(face *f, uniform_grid *UG, cell_index *c1, cell_index *c2, float radius){return 0;}
+float scan_box(face *f, uniform_grid *UG, cell_index *c1, cell_index *c2, point **p, float *min_radius){return 0;}
+
+int make_simplex_ug(face *f, point_set *P, simplex **s, uniform_grid *UG){
+	int i, found = 0, min_index = -1;
+   float min_radius = 999;   
+   float face_radius, box_radius, cellbox_radius = 0;
+   cell_index c1, c2, dir;
+   point *p3;
+
+   face_radius = distance(f->point[0], f->point[1]);
+
+   do {
+      cellbox_radius++;
+      box_radius = calc_box(f, UG, &c1, &c2, cellbox_radius*face_radius);
+      found = scan_box(f, UG, &c1, &c2, &p3, &min_radius);
+   } while(!found && cellbox_radius <= 1);
+
+   //  make a security scan of a box with radius = point dd distance
+   if(found && min_radius > box_radius){      
+      box_radius = calc_box(f, UG, &c1, &c2, sqrt(min_radius));
+      scan_box(f, UG, &c1, &c2, &p3, &min_radius);
+   }
+   
+   // If could not find point, scans entire grid
+   if(!found) {
+     calc_full_box(f, UG, &c1, &c2, &dir);
+     found = scan_full_box(f, UG, &c1, &c2, &dir, &p3, &min_radius);
+   } 
+
+   if (!found /*|| !valid_index(P, min_index)*/)
+      return 0;
+
+   build_simplex(s, f, p3);    
+   return 1;
 }

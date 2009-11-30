@@ -15,6 +15,11 @@ typedef struct {
    cell **c;		
 } uniform_grid;
 
+typedef struct {
+   int x;
+   int y;
+} cell_index;
+
 void bounding_box(point_set *P, uniform_grid *UG);
 void gridSize(uniform_grid *UG, int size);
 int createUniformGrid(point_set *P, uniform_grid *UG);
