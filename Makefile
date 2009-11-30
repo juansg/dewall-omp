@@ -16,6 +16,9 @@ test_geometry:
 
 test_hashlist:  
 	 $(CC) $(CFLAGS) $(MYFLAGS) ./test/hashlist/test_hashlist.c simplex.c simplexio.c geometry.c hashlist.c -o ./test/hashlist/test_hashlist
+
+test_ug:  
+	 $(CC) $(CFLAGS) $(MYFLAGS) ./test/unigrid/test_unigrid.c hashlist.c simplex.c simplexio.c geometry.c ug.c -o ./test/unigrid/test_unigrid
 	 	 
 clean:  
 	- rm -rf *.o dewall
