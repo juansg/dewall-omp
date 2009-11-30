@@ -6,7 +6,7 @@ all: dewall test
 dewall: 
 	 $(CC) $(CFLAGS) $(MYFLAGS) simplexio.c simplex.c geometry.c hashlist.c dewall.c  main.c -o dewall
 
-test: test_simplexio test_geometry test_hashlist
+test: test_simplexio test_geometry test_hashlist test_ug
 
 test_simplexio: 
 	 $(CC) $(CFLAGS) $(MYFLAGS) ./test/simplexio/test_simplexio.c simplex.c geometry.c hashlist.c simplexio.c -o ./test/simplexio/test_simplexio
