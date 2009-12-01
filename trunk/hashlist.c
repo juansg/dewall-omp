@@ -94,7 +94,7 @@ int extract_list(list *l, pointer obj) {
 		return delete_hash(l, *object);   
 		
    // Allocated in insert_list
-	free(elemtofree);
+   // free(elemtofree);
 	return 1;
 }
 
