@@ -1,5 +1,5 @@
 #include "simplex.h"
-#include "ug.h"
+#include "unigrid.h"
 
 #include <stdio.h>
 #include <stdlib.h>
