@@ -1,5 +1,5 @@
 #include "simplex.h"
-#include "ug.h"
+#include "unigrid.h"
 
 //Debug trick
 #define LOGGER printf("[%s - %s] : file %s, line %d\n", __DATE__, __TIME__, __FILE__,__LINE__)
