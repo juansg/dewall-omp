@@ -242,7 +242,7 @@ int make_simplex_ug(face *f, point_set *P, simplex **s, uniform_grid *UG){
    do {
       cellbox_radius++;
       box_radius = calc_box(f, UG, &c1, &c2, cellbox_radius*face_radius);
-      printf("first box (%d, %d)(%d, %d)\n", c1.x, c1.y, c2.x, c2.y);
+      //printf("first box (%d, %d)(%d, %d)\n", c1.x, c1.y, c2.x, c2.y);
       found = scan_box(f, UG, &c1, &c2, &p, &min_radius);
    } while(!found && cellbox_radius <= 2);
 
@@ -255,7 +255,7 @@ int make_simplex_ug(face *f, point_set *P, simplex **s, uniform_grid *UG){
    // If could not find point, scans entire grid
    if(!found) {
      calc_full_box(f, UG, &c1, &c2, &dir);
-     printf("last box (%d, %d)(%d, %d)\n", c1.x, c1.y, c2.x, c2.y);
+     //printf("last box (%d, %d)(%d, %d)\n", c1.x, c1.y, c2.x, c2.y);
      found = scan_full_box(f, UG, &c1, &c2, &dir, &p, &min_radius);
    } 
 
