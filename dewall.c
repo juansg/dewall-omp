@@ -43,13 +43,22 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_lev
    plane alpha;
    simplex *t;
    point_set P1, P2;
-
+   
+   uniform_grid UG;
    int i = 0;
 
   initialize_face_list(&AFLa, P->size/4);
   initialize_face_list(&AFL1, P->size/4);
   initialize_face_list(&AFL2, P->size/4);
-    
+   
+  if (P->size > MIN_UG_SIZE) {
+	if (!createUniformGrid(P,&UG)){
+		 printf("Could not create uniform grid :/\n");
+		 return;
+	}
+	print_uniform_grid(&UG);
+  }
+  
   pointset_partition(P,&alpha,ax,&P1,&P2);
   printf("\nP1:");
   print_points(stdout, &P1);
@@ -65,6 +74,7 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_lev
 	      insert_simplex(t,SL,P);
       }
 	}
+	
 	printf("\nAFL:");
 	print_face_list(stdout, AFL);
 	
@@ -80,9 +90,14 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_lev
   // Building the wall for the faces in the middle
 	while(AFLa.size > 0){
         extract_face(&f,&AFLa);
-        if (make_simplex(f, P, &t)){           
+        int make_simp = 0;
+        if (P->size > MIN_UG_SIZE)
+			make_simp = make_simplex_ug(f, P, &t, &UG);
+		else
+			make_simp = make_simplex(f, P, &t);
+		if (make_simp){ 
             for(i = 0; i < 3; i++){                
-                if (!equal_face(t->face[i], f)){               
+                if (!equal_face(t->face[i], f)){ 					        
                    switch (intersect(t->face[i],&alpha)) {
                        case  0: update_face(t->face[i], &AFLa); break;
                        case -1: update_face(t->face[i], &AFL1); break;

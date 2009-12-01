@@ -50,17 +50,25 @@ int createUniformGrid(point_set *P, uniform_grid *UG) {
    bounding_box(P,UG);
    gridSize(UG, P->size);
    
-   UG->c = (cell **)calloc(UG->sizeX * UG->sizeY, sizeof(cell *));
-   
+   if (UG->sizeX < 0 || UG->sizeY < 0 || UG->grid_size == 0.0 )
+		return 0;
+		
+   UG->c = (cell **)calloc(UG->sizeX * UG->sizeY, sizeof(cell *));   
 
    for (i = 0; i < P->size; i++) {
-		cell *c = (cell *) malloc(sizeof(cell));
+	  cell *c = (cell *) malloc(sizeof(cell));
       if (!c) return 0;
 
-		xGrid = (int) ((P->point[i]->x - UG->min_point.x) / UG->grid_size);
-		yGrid = (int) ((P->point[i]->y - UG->min_point.y) / UG->grid_size);      		
+	  xGrid = (int) ((P->point[i]->x - UG->min_point.x) / UG->grid_size);
+	  yGrid = (int) ((P->point[i]->y - UG->min_point.y) / UG->grid_size);      		
+	  
+	  // Make sure the calculated index is in array bounds	
+	  xGrid = (xGrid < UG->sizeX-1)? xGrid : UG->sizeX-1;
+	  yGrid = (yGrid < UG->sizeY-1)? yGrid : UG->sizeY-1;
+	
       index = xGrid + yGrid * UG->sizeX;
           
+      //printf("Adding point: (%.3f %.3f) to grid[%d][%d]\n", P->point[i]->x, P->point[i]->y, xGrid, yGrid);
       c->p = P->point[i];
       c->next = UG->c[index];
       UG->c[index] = c;
@@ -113,41 +121,147 @@ void calc_full_box(face *f, uniform_grid *UG, cell_index *start, cell_index *end
    }
 }
 
-float scan_full_box(face *f, uniform_grid *UG, cell_index *c1, cell_index *c2,  cell_index *dir, point **p, float *min_radius){return 0;}
+int in_halfspace(int x, int y, face *f, uniform_grid *UG){
+	point p;
+	p.x = x * UG->grid_size + UG->min_point.x;
+	p.y = y * UG->grid_size + UG->min_point.y;
+	return (pointLocationRelativeToFace(f, &p) == 1);
+}
 
-float calc_box(face *f, uniform_grid *UG, cell_index *c1, cell_index *c2, float radius){return 0;}
-float scan_box(face *f, uniform_grid *UG, cell_index *c1, cell_index *c2, point **p, float *min_radius){return 0;}
+int scan_full_box(face *f, uniform_grid *UG, cell_index *start, cell_index *end, 
+ cell_index *dir, point **p, float *min_rad){
+	int i=0,j=0;
+	int cell_index;
+	cell *c;
+	float rad;
+	
+	//printf("start: (%d %d), end: (%d %d)\n", start->x, start->y, end->x, end->y); 
+	point *pp = NULL;
+	int found = 0;
+	
+	for(i = start->x; dir->x*i <= dir->x*end->x; i += dir->x){
+	    if(!in_halfspace(i,start->y,f,UG)) {
+			i = end->x;
+		} else {
+			for(j= start->y; dir->y*j <= dir->y*end->y; j += dir->y) {
+			   if(!in_halfspace(i,j,f,UG)) {
+					j = end->y;
+			   } else {
+				    cell_index = i + j*UG->sizeX;			
+					c = UG->c[cell_index];
+					while(c) {
+						pp = c->p;
+						if (f->point[0] != pp && f->point[1] != pp 
+							&& pointLocationRelativeToFace(f,pp) == 1){
+								rad = circumCircleRadius(f->point[0],f->point[1],pp);
+								if(rad > 0 && rad < *min_rad) {
+									*min_rad = rad;    
+									*p = pp;    
+									//printf("found: (%f %f)\n",pp->x,pp->y);
+									found = 1;     
+								}
+						} 
+						c = c->next;
+					}					
+			   }	 			
+			}
+		}
+   }	
+  return found; 
+ }
+
+float calc_box(face *f, uniform_grid *UG, cell_index *start, cell_index *end, float radius){
+	point centre;
+	float face_radius;
+	float offset;
+	
+	face_radius = distance(f->point[0], f->point[1])/2;
+	
+	offset = sqrt(radius*radius - face_radius*face_radius);
+	
+	centre.x = (f->point[0]->x + f->point[1]->x)/2 + /*Lc->Lv.x **/ offset;
+	centre.y = (f->point[0]->y + f->point[1]->y)/2 + /*Lc->Lv.y **/ offset;
+	
+	start->x = (int)((centre.x - UG->min_point.x - radius)/UG->grid_size);
+	start->y = (int)((centre.y - UG->min_point.y - radius)/UG->grid_size);
+	
+	end->x = (int)((centre.x - UG->min_point.x + radius)/UG->grid_size);
+	end->y = (int)((centre.y - UG->min_point.y + radius)/UG->grid_size);
+	
+	// Make sure the calculated index is in array bounds
+	start->x = (start->x > 0)? start->x : 0;
+	start->y = (start->y > 0)? start->y : 0;
+	
+	end->x = (end->x < UG->sizeX-1)? end->x : UG->sizeX-1;
+	end->y = (end->y < UG->sizeY-1)? end->y : UG->sizeY-1;
+	
+	return radius*radius;
+}
+
+float scan_box(face *f, uniform_grid *UG, cell_index *start, cell_index *end, 
+point **p, float *min_rad){
+	int i,j;
+	int cell_index;
+	cell *c;
+	float rad;
+	
+	point *pp = NULL;
+	int found = 0;
+	//printf("start: (%d %d), end: (%d %d)\n", start->x, start->y, end->x, end->y); 
+	
+	for(i = start->x; i <= end->x; i++)
+	for(j = start->y; j<= end->y; j++){
+		cell_index = i + j * UG->sizeX;
+		c = UG->c[cell_index];
+		while(c) {
+			pp = c->p;
+			if (f->point[0] != pp && f->point[1] != pp 
+				&& pointLocationRelativeToFace(f,pp) == 1){
+					rad = circumCircleRadius(f->point[0],f->point[1],pp);
+					if(rad > 0 && rad < *min_rad) {
+						*min_rad = rad;    
+						*p = pp;    
+						found = 1;     
+					}
+			} 
+			c = c->next;
+		}		
+	}	
+	return found;
+}
 
 int make_simplex_ug(face *f, point_set *P, simplex **s, uniform_grid *UG){
 	int i, found = 0, min_index = -1;
    float min_radius = 999;   
    float face_radius, box_radius, cellbox_radius = 0;
    cell_index c1, c2, dir;
-   point *p3;
+   point *p;
 
-   face_radius = distance(f->point[0], f->point[1]);
-
+   face_radius = distance(f->point[0], f->point[1])/2.0;
+   
    do {
       cellbox_radius++;
       box_radius = calc_box(f, UG, &c1, &c2, cellbox_radius*face_radius);
-      found = scan_box(f, UG, &c1, &c2, &p3, &min_radius);
-   } while(!found && cellbox_radius <= 1);
+      printf("first box (%d, %d)(%d, %d)\n", c1.x, c1.y, c2.x, c2.y);
+      found = scan_box(f, UG, &c1, &c2, &p, &min_radius);
+   } while(!found && cellbox_radius <= 2);
 
    //  make a security scan of a box with radius = point dd distance
-   if(found && min_radius > box_radius){      
+   if(found && min_radius > box_radius){  
       box_radius = calc_box(f, UG, &c1, &c2, sqrt(min_radius));
-      scan_box(f, UG, &c1, &c2, &p3, &min_radius);
+      scan_box(f, UG, &c1, &c2, &p, &min_radius);
    }
    
    // If could not find point, scans entire grid
    if(!found) {
      calc_full_box(f, UG, &c1, &c2, &dir);
-     found = scan_full_box(f, UG, &c1, &c2, &dir, &p3, &min_radius);
+     printf("last box (%d, %d)(%d, %d)\n", c1.x, c1.y, c2.x, c2.y);
+     found = scan_full_box(f, UG, &c1, &c2, &dir, &p, &min_radius);
    } 
 
-   if (!found /*|| !valid_index(P, min_index)*/)
+   if (!found)
       return 0;
-
-   build_simplex(s, f, p3);    
+      
+   build_simplex(s, f, p);    
    return 1;
 }

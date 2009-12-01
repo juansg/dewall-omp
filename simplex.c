@@ -101,6 +101,10 @@ int build_simplex(simplex **s, face *f, point *p) {
 	(*s)->face[2]->point[0] = p;
 	(*s)->face[2]->point[1] = f->point[1];	
 	
+	printf("simplex: (%.3f, %.3f)(%.3f, %.3f)(%.3f, %.3f)\n",
+            (*s)->face[0]->point[0]->x, (*s)->face[0]->point[0]->y,
+            (*s)->face[0]->point[1]->x, (*s)->face[0]->point[1]->y,
+            (*s)->face[1]->point[1]->x, (*s)->face[1]->point[1]->y);
 	return 1;
 }
 
