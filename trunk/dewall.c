@@ -30,9 +30,20 @@ void print_simplex_list(FILE *fp, simplex_list *l, point_set *P) {
     }
 }
 
+void par_deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_level){
+	 #pragma omp parallel
+    {
+        if (omp_get_thread_num() == 0)		    
+          printf("omp_get_num_threads(): %d\n", omp_get_num_threads());
+        #pragma omp single nowait
+        deWall(P, AFL, SL, ax, rec_level);
+    }	
+}
+
 void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_level) {
    printf("\n--------------------------------------------\n");
    printf("Dewall: %d\n", rec_level++);
+   printf("omp_get_thread_num(): %d\n", omp_get_thread_num());
    printf("\n:");
    print_points(stdout, P);
    printf("Axis: %s\n", ax?"Y":"X");
@@ -114,13 +125,22 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_lev
    printf("\nSimplex list:");
    print_simplex_list(stdout, SL,P);
 
-  /* Recursive Triangulation */
-	#pragma omp task
-	if (AFL1.size > 0)
-		deWall(&P1, &AFL1, SL, invert_axis(ax), rec_level);
-	#pragma omp task
-	if (AFL2.size > 0)
-		deWall(&P2, &AFL2, SL, invert_axis(ax), rec_level);  
+	/* Recursive Triangulation */
+	
+	// Deciding to use parallel or serial version
+	if (P->size < LIMIT_OMP){
+		if (AFL1.size > 0)
+			deWall(&P1, &AFL1, SL, invert_axis(ax), rec_level);
+		if (AFL2.size > 0)
+			deWall(&P2, &AFL2, SL, invert_axis(ax), rec_level);		
+	} else {
+		#pragma omp task
+		if (AFL1.size > 0)
+			deWall(&P1, &AFL1, SL, invert_axis(ax), rec_level);
+		#pragma omp task
+		if (AFL2.size > 0)
+			deWall(&P2, &AFL2, SL, invert_axis(ax), rec_level);  
+	}
 }
 
 void pointset_partition(point_set *P, plane* alpha, Axis ax, point_set *P1, point_set *P2){
@@ -254,7 +274,5 @@ int make_simplex(face *f, point_set *P, simplex **s){
    return 1;
 }
 
-
-   
 
 
