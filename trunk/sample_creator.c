@@ -20,8 +20,8 @@ int main(int argc, char **argv) {
 
 	int i;
 	for (i = 0; i < sampleSize; i++) {
-		x = (float) rand() / (float) RAND_MAX * sampleSize - sampleSize / 2;
-		y = (float) rand() / (float) RAND_MAX * sampleSize - sampleSize / 2;
+		x = (float) rand() / (float) RAND_MAX * (sampleSize * 2) - sampleSize;
+		y = (float) rand() / (float) RAND_MAX * (sampleSize * 2) - sampleSize;
 		fprintf(fp, "%f %f\n", x, y);
 	}
 
