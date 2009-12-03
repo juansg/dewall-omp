@@ -41,12 +41,12 @@ void par_deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec
 }
 
 void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_level) {
-   printf("\n--------------------------------------------\n");
+  /* printf("\n--------------------------------------------\n");
    printf("Dewall: %d\n", rec_level++);
    printf("omp_get_thread_num(): %d\n", omp_get_thread_num());
    printf("\n:");
    print_points(stdout, P);
-   printf("Axis: %s\n", ax?"Y":"X");
+   printf("Axis: %s\n", ax?"Y":"X"); */
 	
    face *f;
    face_list AFLa, AFL1, AFL2;
@@ -67,14 +67,14 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_lev
 		 printf("Could not create uniform grid :/\n");
 		 return;
 	}
-	print_uniform_grid(&UG);
+	// print_uniform_grid(&UG);
   }
   
   pointset_partition(P,&alpha,ax,&P1,&P2);
-  printf("\nP1:");
+  /* printf("\nP1:");
   print_points(stdout, &P1);
   printf("\nP2:");
-  print_points(stdout, &P2);
+  print_points(stdout, &P2); */
 	
 	/* Simple Wall Construction */
 
@@ -86,8 +86,8 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_lev
       }
 	}
 	
-	printf("\nAFL:");
-	print_face_list(stdout, AFL);
+	/*printf("\nAFL:");
+	print_face_list(stdout, AFL);*/
 	
   // Dividing the faces in 3 lists
 	while (extract_face(&f,AFL)){
@@ -122,8 +122,8 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_lev
         }		
 	}
 
-   printf("\nSimplex list:");
-   print_simplex_list(stdout, SL,P);
+   /*printf("\nSimplex list:");
+   print_simplex_list(stdout, SL,P);*/
 
 	/* Recursive Triangulation */
 	
