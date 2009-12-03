@@ -58,7 +58,7 @@ int write_simplex_list(char *filename, simplex_list *sl, point_set *P) {
   if (!fp)
     return 0;
     
-  printf("\nWriting simplex list to file %s.\n\n", filename);  
+//  printf("\nWriting simplex list to file %s.\n\n", filename);  
 
   if (!sl || !P || !filename) return 0;
 

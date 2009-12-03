@@ -33,8 +33,8 @@ void print_simplex_list(FILE *fp, simplex_list *l, point_set *P) {
 void par_deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_level){
 	 #pragma omp parallel
     {
-        if (omp_get_thread_num() == 0)		    
-          printf("omp_get_num_threads(): %d\n", omp_get_num_threads());
+//        if (omp_get_thread_num() == 0)		    
+//          printf("omp_get_num_threads(): %d\n", omp_get_num_threads());
         #pragma omp single nowait
         deWall(P, AFL, SL, ax, rec_level);
     }	
