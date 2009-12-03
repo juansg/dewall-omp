@@ -200,7 +200,7 @@ int member_hash(list *l, pointer obj) {
  
 	while(h_elem) {
 		elem = h_elem->list_elem;
-		if(equal(obj, elem->obj, l)){
+		if(equal(l, obj, elem->obj)){
 			l->current = elem;
 			return 1;
 		}
