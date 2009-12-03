@@ -67,14 +67,14 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_lev
 		 printf("Could not create uniform grid :/\n");
 		 return;
 	}
-	// print_uniform_grid(&UG);
+	//print_uniform_grid(&UG);
   }
   
   pointset_partition(P,&alpha,ax,&P1,&P2);
-  /* printf("\nP1:");
+  /*printf("\nP1:");
   print_points(stdout, &P1);
   printf("\nP2:");
-  print_points(stdout, &P2); */
+  print_points(stdout, &P2);*/
 	
 	/* Simple Wall Construction */
 

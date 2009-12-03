@@ -38,7 +38,7 @@ int update_face(face *f, face_list *AFL) {
 }
 void initialize_face_list(face_list *AFL, int size) {
 	initialize_list(AFL,sizeof(face *),equal_face);
-    hash_list(AFL, size, hash_face);
+   hash_list(AFL, size, hash_face);
 }
 
 /* simplex list handling */
