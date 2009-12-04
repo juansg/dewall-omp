@@ -70,7 +70,8 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_lev
 	//print_uniform_grid(&UG);
   }
   
-  pointset_partition(P,&alpha,ax,&P1,&P2);
+  if (!pointset_partition(P,&alpha,ax,&P1,&P2)) 
+	return;
   /*printf("\nP1:");
   print_points(stdout, &P1);
   printf("\nP2:");
@@ -143,7 +144,9 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_lev
 	}
 }
 
-void pointset_partition(point_set *P, plane* alpha, Axis ax, point_set *P1, point_set *P2){
+int pointset_partition(point_set *P, plane* alpha, Axis ax, point_set *P1, point_set *P2){
+ if (P->size < 1) return 0;
+ 
  switch(ax)
   {
    case XAxis :	qsort((void *)P->point, (size_t)P->size, sizeof(point *), compare_points_X);
@@ -169,6 +172,7 @@ void pointset_partition(point_set *P, plane* alpha, Axis ax, point_set *P1, poin
    P2->point = &(P->point[P1->size]);
 
    P1->base_point = P2->base_point = P->base_point;
+   return 1;
 }
 
 //Return the minimum distance, the minimum index is stored in *i
@@ -176,7 +180,7 @@ float minimum_distance(point *p, point_set *P, int start, int end, int *index){
    int i, min_index = -1;
    float dist, min_dist;   
 
-   dist = min_dist = 999;
+   dist = min_dist = MAX_RADIUS;
 
    for(i = start; i < end; i++) {
      dist = distance(p, P->point[i]);
@@ -195,7 +199,7 @@ float minimum_radius(point *p1, point *p2, point_set *P, int start, int end, int
    int i, min_index = -1;
    float rad, min_rad;   
 
-   rad = min_rad = 999;
+   rad = min_rad = MAX_RADIUS;
 
    for(i = start; i < end; i++) 
       if (p1 != P->point[i] && p2 != P->point[i]){
@@ -255,7 +259,7 @@ int make_simplex(face *f, point_set *P, simplex **s){
 	int i, min_index = -1;
    float rad, min_rad;   
 
-   rad = min_rad = 999;
+   rad = min_rad = MAX_RADIUS;
    
    for(i = 0; i < P->size; i++) 
       if (f->point[0] != P->point[i] && f->point[1] != P->point[i] 

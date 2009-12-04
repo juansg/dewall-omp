@@ -140,13 +140,13 @@ int scan_full_box(face *f, uniform_grid *UG, cell_index *start, cell_index *end,
 	int found = 0;
 	
 	for(i = start->x; dir->x*i <= dir->x*end->x; i += dir->x){
-	    if(!in_halfspace(i,start->y,f,UG)) {
-			i = end->x;
-		} else {
+	    //if(!in_halfspace(i,start->y,f,UG)) {
+		//	i = end->x;
+		//} else {
 			for(j= start->y; dir->y*j <= dir->y*end->y; j += dir->y) {
-			   if(!in_halfspace(i,j,f,UG)) {
-					j = end->y;
-			   } else {
+			  // if(!in_halfspace(i,j,f,UG)) {
+			  //		j = end->y;
+			   //} else {
 				    cell_index = i + j*UG->sizeX;			
 					c = UG->c[cell_index];
 					while(c) {
@@ -163,9 +163,9 @@ int scan_full_box(face *f, uniform_grid *UG, cell_index *start, cell_index *end,
 						} 
 						c = c->next;
 					}					
-			   }	 			
+			   //}	 			
 			}
-		}
+		//}
    }	
   return found; 
  }
@@ -232,11 +232,13 @@ point **p, float *min_rad){
 
 int make_simplex_ug(face *f, point_set *P, simplex **s, uniform_grid *UG){
 	int i, found = 0, min_index = -1;
-   float min_radius = 999;   
+   float min_radius = MAX_RADIUS;   
    float face_radius, box_radius, cellbox_radius = 0;
    cell_index c1, c2, dir;
    point *p;
 
+   if (P->size < 1) return 0;
+   
    face_radius = distance(f->point[0], f->point[1])/2.0;
    
    do {

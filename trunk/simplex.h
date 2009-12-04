@@ -24,6 +24,7 @@ void initialize_simplex_list(simplex_list *sl, int size);
 int build_simplex(simplex **s, face *f, point *p);
 int insert_simplex(simplex *s, simplex_list *sl, point_set *P);
 int extract_simplex(simplex_index **s, simplex_list *sl);
+int equal_simplex(void *vs1, void *vs2) ;
 
 int insert_face(face *f, face_list *AFLa);
 int extract_face(face **f, face_list *AFL);

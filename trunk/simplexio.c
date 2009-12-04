@@ -63,8 +63,7 @@ int write_simplex_list(char *filename, simplex_list *sl, point_set *P) {
   if (!sl || !P || !filename) return 0;
 
   fprintf(fp, "%d\n\n", sl->size);
-  while (sl->size > 0)
-	    if (extract_simplex(&simp,sl)){		  
+  while (extract_simplex(&simp,sl)){		  
            fprintf(fp, "(%.3f, %.3f)(%.3f, %.3f)(%.3f, %.3f)\n",
             P->base_point[simp->index[0]].x, P->base_point[simp->index[0]].y,
             P->base_point[simp->index[1]].x, P->base_point[simp->index[1]].y,
@@ -72,8 +71,7 @@ int write_simplex_list(char *filename, simplex_list *sl, point_set *P) {
 
             // Alocated in insert_simplex
             free(simp);
-      }
-  
+  }  
   fclose(fp);
   return 1;
 }

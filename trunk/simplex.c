@@ -18,6 +18,23 @@ int equal_face(void *vf1, void *vf2)  {
 	return 1;
 }
 
+int equal_simplex(void *vs1, void *vs2)  {
+  	simplex_index *s1 = (simplex_index *) vs1;
+	simplex_index *s2 = (simplex_index *) vs2;  
+	//printf("s1: %d %d %d\n", s1->index[0], s1->index[1], s1->index[2]);
+	//printf("s2: %d %d %d\n", s2->index[0], s2->index[1], s2->index[2]);
+	int i, equal = 1;
+    
+    for (i = 0; i < 3; i++){
+			if (s1->index[i] != s2->index[0] &&
+			    s1->index[i] != s2->index[1] &&
+			    s1->index[i] != s2->index[2])		
+				return 0;
+	}
+	
+	return 1;
+}
+
 int hash_face(void *vf) {
   face *f = (face *) vf;
   return (int)((long)(f->point[0]) ^ (long)(f->point[1]));
@@ -38,7 +55,7 @@ int update_face(face *f, face_list *AFL) {
 }
 void initialize_face_list(face_list *AFL, int size) {
 	initialize_list(AFL,sizeof(face *),equal_face);
-   hash_list(AFL, size, hash_face);
+    hash_list(AFL, size, hash_face);
 }
 
 /* simplex list handling */
@@ -50,7 +67,7 @@ int hash_simplex(void *vs) {
 }
 
 void initialize_simplex_list(simplex_list *sl, int size) {
-	initialize_list(sl,sizeof(char *),NULL);
+	initialize_list(sl,sizeof(char *),equal_simplex);
 }
 
 int insert_simplex(simplex *s, simplex_list *sl, point_set *P) {	
