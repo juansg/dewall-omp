@@ -4,7 +4,7 @@ CFLAGS = -lm
 all: dewall test
 
 dewall: 
-	 $(CC) $(CFLAGS) $(MYFLAGS) -fopenmp simplexio.c simplex.c geometry.c hashlist.c unigrid.c dewall.c  main.c -o dewall
+	 $(CC) $(CFLAGS) $(MYFLAGS) simplexio.c simplex.c geometry.c hashlist.c unigrid.c dewall.c  main.c -o dewall
 
 test: test_simplexio test_geometry test_hashlist test_unigrid
 

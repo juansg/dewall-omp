@@ -50,6 +50,8 @@ int equal(list *l, pointer elem1, pointer elem2) {
 int insert_list(list *l, pointer object) {
 	list_element *elem;
 	list_element *old_elem;
+	
+	if(member_list(l, object)) return 0;
    // Dealocated in extract_list or delete_current_list
 	elem = (list_element *)malloc(sizeof(list_element));
 	if(!elem)
@@ -77,9 +79,8 @@ int extract_list(list *l, pointer obj) {
 	list_element *elemtofree;
 	pointer *object = (pointer *)obj;
 	
-	if(l->size < 1) 
-		return 0;	
-               
+	if(l->size < 1 || !(l->first)) 
+		return 0;	               
          
 	*object = l->first->obj;         
 	elemtofree = l->first;

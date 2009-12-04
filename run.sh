@@ -1,8 +1,8 @@
 export OMP_SET_DYNAMIC=0
-#export OMP_NUM_THREADS=8
+export OMP_NUM_THREADS=1
 
 rm -f test_results test_time test_timet
-for i in 10 100 1000 10000
+for i in {1000..100000..1000}
 do
 	for j in {1..10}
 	do
@@ -13,7 +13,6 @@ do
 	done
 done
 
-rm -f sample.$i.$j.i.txt sample.$i.$j.o.txt
-
+#rm -f sample.$i.$j.i.txt sample.$i.$j.o.txt
 grep real test_timet | awk '{print $2}' > test_time
 

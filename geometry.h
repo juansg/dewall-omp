@@ -1,6 +1,8 @@
 /* Data structures */
+#include <limits.h>
 
 #define EPSILON 0.000001
+#define MAX_RADIUS INT_MAX
 
 typedef struct {   
 	float x, y;
