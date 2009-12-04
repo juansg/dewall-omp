@@ -1,4 +1,4 @@
-MYFLAGS = 
+MYFLAGS = -g
 CFLAGS = -lm 
 
 all: dewall test

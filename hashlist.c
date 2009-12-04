@@ -77,7 +77,7 @@ int extract_list(list *l, pointer obj) {
 	list_element *elemtofree;
 	pointer *object = (pointer *)obj;
 	
-	if(l->size == 0) 
+	if(l->size < 1) 
 		return 0;	
                
          
