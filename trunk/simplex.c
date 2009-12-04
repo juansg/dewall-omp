@@ -31,10 +31,10 @@ int extract_face(face **f, face_list *AFL) {
 }
 int update_face(face *f, face_list *AFL) {
 	if (member_list(AFL, f)){
-		delete_list(AFL, f);     
+		return delete_list(AFL, f);     
    }
 	else 
-		insert_list(AFL, f);
+		return insert_list(AFL, f);
 }
 void initialize_face_list(face_list *AFL, int size) {
 	initialize_list(AFL,sizeof(face *),equal_face);
