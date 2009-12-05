@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 		}
 		
 		initialize_face_list(&AFL, P.size/4);
-		initialize_simplex_list(&SL, P.size/4);
+		initialize_simplex_list(&SL, P.size/2);
 
 		// ---- Calculate time from here -----
 		par_deWall(&P, &AFL, &SL, XAxis, 0);
