@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <sys/time.h>
+#include <time.h>
+
 
 // Globals to save their values when getting SIGSEGV
 point_set P;
@@ -16,6 +19,8 @@ void signal_handler(int sig){
 
 int main(int argc, char *argv[]) {
 	face_list AFL;
+	struct timeval start_time, end_time;
+
 	// Do not abort immeditely, save the triangles!
 	signal(SIGSEGV, signal_handler);
 
@@ -32,8 +37,16 @@ int main(int argc, char *argv[]) {
 		initialize_face_list(&AFL, P.size/4);
 		initialize_simplex_list(&SL, P.size/2);
 
-		// ---- Calculate time from here -----
+		int total_usecs;
+		gettimeofday(&start_time, NULL);
+
 		par_deWall(&P, &AFL, &SL, XAxis, 0);
+
+		gettimeofday(&end_time, NULL); 
+		total_usecs = (end_time.tv_sec-start_time.tv_sec) * 1000000 +
+                 (end_time.tv_usec-start_time.tv_usec);
+		printf("%d uSec\n", total_usecs);	
+		
 		// -----------------------------------
 
 		write_simplex_list(argv[2], &SL, &P);
