@@ -1,6 +1,7 @@
 #include "simplex.h"
 #include <stdlib.h>
 
+#define FNV_prime 37
 /* face list handling */
 
 int equal_face(void *vf1, void *vf2)  {
@@ -21,16 +22,21 @@ int equal_face(void *vf1, void *vf2)  {
 int equal_simplex(void *vs1, void *vs2)  {
   	simplex_index *s1 = (simplex_index *) vs1;
 	simplex_index *s2 = (simplex_index *) vs2;  
-	//printf("s1: %d %d %d\n", s1->index[0], s1->index[1], s1->index[2]);
-	//printf("s2: %d %d %d\n", s2->index[0], s2->index[1], s2->index[2]);
-	int i, equal = 1;
-    
-    for (i = 0; i < 3; i++){
-			if (s1->index[i] != s2->index[0] &&
-			    s1->index[i] != s2->index[1] &&
-			    s1->index[i] != s2->index[2])		
-				return 0;
-	}
+	
+	if (s1->index[0] != s2->index[0] &&
+    s1->index[0] != s2->index[1] &&
+    s1->index[0] != s2->index[2])		
+		return 0;
+	
+	if (s1->index[1] != s2->index[0] &&
+    s1->index[1] != s2->index[1] &&
+    s1->index[1] != s2->index[2])		
+		return 0;
+		
+	if (s1->index[2] != s2->index[0] &&
+    s1->index[2] != s2->index[1] &&
+    s1->index[2] != s2->index[2])		
+		return 0;		
 	
 	return 1;
 }
@@ -61,13 +67,14 @@ void initialize_face_list(face_list *AFL, int size) {
 /* simplex list handling */
 
 int hash_simplex(void *vs) {
-  simplex *s = (simplex *) vs;
-  return (hash_face(&(s->face[0])) ^ hash_face(&(s->face[1])) ^ 
-		hash_face(&(s->face[2])));
+  simplex_index *s = (simplex_index *) vs;
+  return ((s->index[0]*FNV_prime) ^ (s->index[1]*FNV_prime)
+   ^ (s->index[2]*FNV_prime));
 }
 
 void initialize_simplex_list(simplex_list *sl, int size) {
-	initialize_list(sl,sizeof(char *),equal_simplex);
+	initialize_list(sl,sizeof(simplex_index *),equal_simplex);
+	hash_list(sl, size, hash_simplex);
 }
 
 int insert_simplex(simplex *s, simplex_list *sl, point_set *P) {	
@@ -83,8 +90,8 @@ int insert_simplex(simplex *s, simplex_list *sl, point_set *P) {
    else 
       simp->index[2] = s->face[1]->point[1] - P->base_point;
 
-   // Alocated in build_simplex function   
-   free(s);
+   if(member_list(sl, simp))
+	 return 0;
    return insert_list(sl, simp);
 }
 

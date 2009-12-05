@@ -108,18 +108,21 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_lev
 		else
 			make_simp = make_simplex(f, P, &t);
 		if (make_simp){ 
-            for(i = 0; i < 3; i++){                
-                if (!equal_face(t->face[i], f)){ 					        
-                   switch (intersect(t->face[i],&alpha)) {
-                       case  0: update_face(t->face[i], &AFLa); break;
-                       case -1: update_face(t->face[i], &AFL1); break;
-                       case  1: update_face(t->face[i], &AFL2); break;
-                   }
-                }               
-            }  
+			if (insert_simplex(t,SL,P)){
+				for(i = 0; i < 3; i++){                
+					if (!equal_face(t->face[i], f)){ 					        
+					   switch (intersect(t->face[i],&alpha)) {
+						   case  0: update_face(t->face[i], &AFLa); break;
+						   case -1: update_face(t->face[i], &AFL1); break;
+						   case  1: update_face(t->face[i], &AFL2); break;
+					   }
+					}  
+				}               
+			}
+			// Alocated in build_simplex function   
+			free(t);
             // Allocated in build_simplex function
             free(f);
-            insert_simplex(t,SL,P);
         }		
 	}
 

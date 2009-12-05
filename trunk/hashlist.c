@@ -51,7 +51,6 @@ int insert_list(list *l, pointer object) {
 	list_element *elem;
 	list_element *old_elem;
 	
-	if(member_list(l, object)) return 0;
    // Dealocated in extract_list or delete_current_list
 	elem = (list_element *)malloc(sizeof(list_element));
 	if(!elem)
@@ -106,11 +105,12 @@ int member_list(list *l, pointer object) {
    
 	l->current = l->first;
 	int i = 0;
-	for(i = 0; i < l->size; i++) 	
+	for(i = 0; i < l->size && l->current; i++) { 	
 		if(equal(l, object, l->current->obj)) {
 			return 1;			      
 		}
-				
+		l->current = l->current->next;
+	}			
 	l->current = temp_current;
 	return 0;
 }
