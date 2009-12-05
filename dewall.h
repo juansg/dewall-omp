@@ -2,6 +2,7 @@
 #include "unigrid.h"
 
 //Debug trick
+#define MAX_REC_LEVEL 30000
 #define LOGGER printf("[%s - %s] : file %s, line %d\n", __DATE__, __TIME__, __FILE__,__LINE__)
 #define MIN_UG_SIZE 5
 #define LIMIT_OMP 2 // make studies to decide which is the best value

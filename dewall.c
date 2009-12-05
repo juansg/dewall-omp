@@ -92,12 +92,16 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_lev
 	
   // Dividing the faces in 3 lists
 	while (extract_face(&f,AFL)){
-        switch (intersect(f,&alpha)) {
-            case  0: insert_face(f, &AFLa); break;
-            case -1: insert_face(f, &AFL1); break;
-            case  1: insert_face(f, &AFL2); break;
-        }
-	}	
+		if (rec_level < MAX_REC_LEVEL){	
+			switch (intersect(f,&alpha)) {
+				case  0: insert_face(f, &AFLa); break;
+				case -1: insert_face(f, &AFL1); break;
+				case  1: insert_face(f, &AFL2); break;
+			}
+		} else {
+			insert_face(f, &AFLa); 
+		}
+	}		
 	
   // Building the wall for the faces in the middle
 	while(AFLa.size > 0){
@@ -110,12 +114,16 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_lev
 		if (make_simp){ 
 			if (insert_simplex(t,SL,P)){
 				for(i = 0; i < 3; i++){                
-					if (!equal_face(t->face[i], f)){ 					        
-					   switch (intersect(t->face[i],&alpha)) {
-						   case  0: update_face(t->face[i], &AFLa); break;
-						   case -1: update_face(t->face[i], &AFL1); break;
-						   case  1: update_face(t->face[i], &AFL2); break;
-					   }
+					if (!equal_face(t->face[i], f)){ 	
+						if (rec_level < MAX_REC_LEVEL){				        
+							switch (intersect(t->face[i],&alpha)) {
+							   case  0: update_face(t->face[i], &AFLa); break;
+							   case -1: update_face(t->face[i], &AFL1); break;
+							   case  1: update_face(t->face[i], &AFL2); break;
+						   }
+						 } else {
+							update_face(t->face[i], &AFLa); break;
+						 }
 					}  
 				}               
 			}
@@ -125,12 +133,12 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_lev
             free(f);
         }		
 	}
-
+	
    /*printf("\nSimplex list:");
    print_simplex_list(stdout, SL,P);*/
 
 	/* Recursive Triangulation */
-	
+	rec_level++;
 	// Deciding to use parallel or serial version
 	if (P->size < LIMIT_OMP){
 		if (AFL1.size > 0 && P1.size > 0)
