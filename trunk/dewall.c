@@ -133,16 +133,16 @@ void deWall(point_set *P, face_list *AFL, simplex_list *SL, Axis ax, int rec_lev
 	
 	// Deciding to use parallel or serial version
 	if (P->size < LIMIT_OMP){
-		if (AFL1.size > 0)
+		if (AFL1.size > 0 && P1.size > 0)
 			deWall(&P1, &AFL1, SL, invert_axis(ax), rec_level);
-		if (AFL2.size > 0)
+		if (AFL2.size > 0 && P2.size > 0)
 			deWall(&P2, &AFL2, SL, invert_axis(ax), rec_level);		
 	} else {
 		#pragma omp task
-		if (AFL1.size > 0)
+		if (AFL1.size > 0 && P1.size > 0)
 			deWall(&P1, &AFL1, SL, invert_axis(ax), rec_level);
 		#pragma omp task
-		if (AFL2.size > 0)
+		if (AFL2.size > 0 && P2.size > 0)
 			deWall(&P2, &AFL2, SL, invert_axis(ax), rec_level);  
 	}
 }
