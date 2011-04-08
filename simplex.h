@@ -1,15 +1,15 @@
 #include "geometry.h" 
 #include "hashlist.h" 
 #include <stdio.h>
-    
+
 typedef list face_list;    
 
 typedef struct {
-    face *face[3];
+  face *face[3];
 } simplex;
 
 typedef struct {
-   int index[3];
+  int index[3];
 } simplex_index;
 
 typedef list simplex_list;

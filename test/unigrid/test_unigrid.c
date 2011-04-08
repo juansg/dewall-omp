@@ -9,7 +9,7 @@ int main() {
   point_set P;
   list l;
   int i = 0;
-  
+
   if (read_points("test_unigrid.p", &P) == -1)
     printf("Failed to read input points.\n");
   else {

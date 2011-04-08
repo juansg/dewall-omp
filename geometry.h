@@ -5,23 +5,23 @@
 #define MAX_RADIUS INT_MAX
 
 typedef struct {   
-	float x, y;
+  float x, y;
 } point;
 
 typedef struct {
-    point *base_point;
-    point **point;  
-    int size;
+  point *base_point;
+  point **point;  
+  int size;
 } point_set;
 
-    
+
 typedef struct {
-    point normal;
-    float off;
+  point normal;
+  float off;
 } plane;
 
 typedef struct {	
-    point *point[2];			
+  point *point[2];			
 } face; 
 
 typedef int Axis;
